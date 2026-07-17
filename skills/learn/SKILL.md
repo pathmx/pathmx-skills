@@ -3,69 +3,71 @@ name: learn
 description: Teach the user a new skill or concept, within this workspace.
 disable-model-invocation: true
 argument-hint: "What would you like to learn?"
+adapted-from: https://github.com/mattpocock/skills/blob/main/skills/productivity/teach/SKILL.md
 ---
 
-The user has asked you to teach them something. This is a stateful request - they intend to learn the topic over multiple sessions.
+<!-- TODO: should we install the pathmx skill/reference it somehow here and make sure the agent knows to use it when authoring content -->
 
-## A PathMX Learning Workspace
+# Make Paths
 
-PathMX (Paths Markdown eXtension) is used to author interactive, human-and-agent readable,  and portable curriculum in repository.
+This skill creates interactive, immersive, personalized learning paths based on what a user wants to learn. This creates a knowledge repository that is maintained over time and can serve as a home base for all of the user's learning goals and material. These paths are built with PathMX (Paths Markdown eXtension)
 
-Treat the current directory as a teaching workspace. The workspace is managed with pathmx. If PathMX is not setup to run, set it up for the user:
+This creates a learning paths inside a pathmx repository. Use the `/pathmx` 
 
-1. Install the latest version of Bun for their system
-2. Install pathmx and initialize the workspace
+- Start with a broad what would you like to learn about?
+- Help the learner narrow it down to a specific-outcome focused actionable goal. Keep drilling down until you get a shared goal concesses. If the learner just wants to explore a topic that is also fine but should be a stated.
+- Once enough information has started 
+- We need to assess where the learner is and wants to go before making the A->B 
+    - Find Point A: Where is the learner starting in the desired domain (asses what they have using questions or evidence of learning). Encourage the learner to share links, projects, artifacts. We will reference these links later so add them to the user's learning records log (see below for how). 
+    - Find Point B: This is the outcome/goal of the learning path. It shoudl be specific enough to be mearuable and have a basic rubric
 
-```bash
-bun 
-```
+Don't build the whole path up front, just outline the overall path structure and the next few steps (a step in a path is a single lesson file/folder.)
 
-Before running pathmx, make sure that it is updated to the latest version using:
+From here, we will create a path per 
 
-```bash
-pathmx self-update
-```
+## Learning Path IA:
 
---- 
+A learning path is a `*.path.md`, usually `index.path.md` covering A->B points for a learner and outcome.
 
-<!-- TODO: should we install the pathmx skill and tell the agent to use that here? probably? -->
-
-The state of their learning is captured in this directory:
-
+- Path: The overal learning from A -> B
+    - Modules/Units/Groups (weeks, lessons)
+        - Steps: a actionable unit of focuesed work, can ideally be done in one session and has a tight outcome
+            - Blocks: Blocks are the content within a step (like slides) that guide the user through the experience
+            
 ```text
-./
-├── paths/
-│   ├── topics/
-│   │   ├── topic.mission.md      # Why the user cares — grounds all teaching
-│   │   │                         # Format: [MISSION-FORMAT.md](./MISSION-FORMAT.md)
-│   │   └── topic.index.md        # Index of topics the user wants to learn
-│   ├── reference/
-│   │   ├── *.reference.md        # Cheat sheets, algorithms, glossaries, etc.
-│   │   │                         # Compressed lesson essence; print-friendly
-│   │   └── learning.resources.md # High-trust sources for grounding teaching
-│   │                             # Format: [RESOURCES-FORMAT.md](./RESOURCES-FORMAT.md)
-│   ├── learning/
-│   │   ├── *.record.md           # Learning records (ADRs for insight)
-│   │   │                         # Named 0001-<dash-case-name>.record.md
-│   │   │                         # Format: [LEARNING-RECORD-FORMAT.md](./LEARNING-RECORD-FORMAT.md)
-│   │   └── learning.index.md     # Index linking every learning record
-│   ├── lessons/
-│   │   └── *.lesson.md           # One self-contained PathMX lesson each
-│   │                             # Primary unit of teaching; playable + guided
-│   ├── assets/                   # Reusable components shared across lessons
-│   │                             # See [Assets](#assets)
-│   └── notes.md                  # Scratchpad: preferences and working notes
+paths/
+├── learner.persona.md          # learner profile
+├── learning.activity.md        # global learning record
+└── <path-name>/
+    ├── index.path.md           # path structure + progress
+    ├── path.outcome.md         # goal, outcome, rubric
+    ├── lessons/
+    │   └── <lesson-name>/
+    │       ├── index.lesson.md
+    │       └── lesson.assessment.md
+    └── references/
+        ├── index.references.md         # a list of all the references used in this path
+        └── <name>.reference.md
 ```
 
-## Philosophy
+- **`learner.persona.md`** — the learner's profile: name, bio, avatar (if provided), goals, motivations, personality details, preferences, etc.
+- **`learning.activity.md`** — the global record of learning activity/evidence across all paths. Each record is its own block, notes what was learned, and links to the relevant lesson, assessment, and evidence material. In some cases evidence should be snapshotted as its own PathMX source (`*.evidence.md`) and linked from the record.
+- **`index.path.md`** — the overall structure of the path, with links to each active lesson; tracks overall progress.
+- **`path.outcome.md`** — the overall goal and outcome, plus a rubric for evaluating the result.
+- **`lessons/`** — individual lessons used by the path.
+  - **`lesson.assessment.md`** — the evaluation of the learner to check they really know the topic; can be quiz/question based and/or backed by uploaded/local evidence.
+- **`references/`** — reference/support materials that back up lesson content; usable as learning resources or as material for building out new lessons.
+
+## Philosophy/Pedagogy
 
 To learn at a deep level, the user needs three things:
 
-- **Knowledge**, captured from high-quality, high-trust resources
-- **Skills**, acquired through highly-relevant interactive lessons devised by you, based on the knowledge
-- **Wisdom**, which comes from interacting with other learners and practitioners
+- **Information**, captured from high-quality, high-trust resources
+- **Knowledge**: the vocabulary and key information that make up a skill or knowledge domain.
+- **Skills**, acquired through highly-relevant interactive lessons devised by you, based on the information
+- **Wisdom**, which comes from experience over time and is demonstrated by real-world outcomes and evidence.
 
-Before the `RESOURCES.md` is well-populated, your focus should be to find high-quality resources which will help the user acquire knowledge. Never trust your parametric knowledge.
+Before the path's `index.references.md` is well-populated, your focus should be to find high-quality resources which will help the user acquire information that leads to knowledge. Never trust your parametric knowledge.
 
 Some topics may require more skills than knowledge. Learning more about theoretical physics might be more knowledge-based. For yoga, more skills-based.
 

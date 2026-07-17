@@ -1,0 +1,7 @@
+{
+  "name": "pathmx-skills",
+  "private": true,
+  "scripts": {
+    "sync-skills": "bun run scripts/sync-skills.ts"
+  }
+}
