@@ -1,8 +1,7 @@
 ---
 name: pathmx
-description: Author rich interactive curriculum repositiories using Paths Markdown eXtension
+description: Author rich interactive curriculum repositories using Paths Markdown eXtension
 ---
-
 
 # PathMX
 
@@ -28,11 +27,25 @@ PathMX is a curriculum-as-code methodology that is:
 - **Diffable** in normal version control.
 - **Portable** across tools, organizations, and time.
 
-The methodology is minimally opinionated. It standardizes only the small set of structural conventions needed to make a knowledge graph  *self-describing*; anything beyond that is left to the producer.
+The methodology is minimally opinionated. It standardizes only the small set of structural conventions needed to make a knowledge graph *self-describing*; anything beyond that is left to the producer.
+
+## Terminology
+
+| Term | Meaning |
+| --- | --- |
+| **Source** | One markdown file: frontmatter + content, parsed into Blocks. The unit of the knowledge graph. |
+| **Block** | A thematic unit of content within a Source, delimited by `---`. The coarse Play unit — like a slide. |
+| **Beat** | One focusable Play stop inside a Block: a paragraph, list item, table row, code step, media element, or component state. |
+| **Frontmatter** | YAML metadata at the top of a Source (`type`, `title`, `tags`, `theme`, `play`, …). |
+| **Topmatter** | Block-level metadata written as an HTML comment immediately after a `---` divider. Overrides frontmatter for that Block. |
+| **Type hint** | The filename suffix that declares a Source's role and build type, e.g. `intro.lesson.md`, `week-1.lab.md`. |
+| **Root Source** | An entry point to the repository (conventionally `paths/index.path.md`). Everything reachable from a root forms one graph/view. |
+| **Play** | The guided mode of the player: focused, step-by-step traversal of Blocks and Beats. Contrast with **browse** (free scroll). |
+| **Directive** | An `@`-prefixed marker on a markdown link or reference definition (`[@include: …]`, `[@styles]:`) that gives it PathMX behavior. |
+| **Literate component** | A reusable custom tag defined in a `*.component(s).md` file as prose + `html`/`css`/`js` fences. |
+| **Spaceholder** | An authored placeholder (attached `@spaceholder` comment) that an agent or tool fills with generated content. |
 
 ## Methodology
-
-# PathMX Methodology
 
 There are three core principles to the PathMX methodology:
 
@@ -40,7 +53,7 @@ There are three core principles to the PathMX methodology:
 
 Markdown is the lingua franca of modern human and agent interactions. It is a well-established, stable and portable format for authoring human-and-agent readable plain text documents with hyperlink support. PathMX-compatible markdown should support CommonMark and GFM flavoured markdown as well as more advanced PathMX-specific examples. In general PathMX markdown should be written to be human-readable and agent friendly.
 
-See the [PathMX Markdown Guide](./references/pathmx-markdown.md) for more information on how write proper PathMX markdown.
+See the [PathMX Markdown Guide](./references/pathmx-markdown.md) for more information on how to write proper PathMX markdown.
 
 ## Principle 2: Explicit file types
 
@@ -50,8 +63,7 @@ See the [Simple PathMX Repo Example](./references/repo-example/pathmx-repository
 
 ## Principle 3: Hyperlinked paths
 
-Links between documents create a natural knowledge graph and allow for creating paths through it. A large knowledge graph may have many different paths depending on where the user is coming from or entering the space. PathMX repositories are organized by root entry points that create a graph-per-root for each link that is reachable fromt he root. This allows for multiple "views" of the same learning graph and serves as a natural permissions 
-layer for who can see what. Most PathMX repos start with a single root, convetionally located in `paths/index.path.md`. 
+Links between documents create a natural knowledge graph and allow for creating paths through it. A large knowledge graph may have many different paths depending on where the user is coming from or entering the space. PathMX repositories are organized by root entry points that create a graph-per-root for each link that is reachable from the root. This allows for multiple "views" of the same learning graph and serves as a natural permissions layer for who can see what. Most PathMX repos start with a single root, conventionally located in `paths/index.path.md`.
 
 See the [Simple PathMX Repo Example](./references/repo-example) for an example PathMX repository. Note that the desired structure and setup will depend on the use case and domain PathMX is being used to model.
 
@@ -86,15 +98,32 @@ pathmx --version
 pathmx init --help
 ```
 
---- 
+---
 
 # PathMX Authoring
 
-PathMX should be written as simple, human readable common/GFM markdown with by default with extensions used where appropriate to the learning experience.
+PathMX should be written as simple, human-readable CommonMark/GFM markdown by default, with extensions used where appropriate to the learning experience.
 
 ## Built in PathMX Capabilities
 
-The most important different between PathMX and other markdown-based content authoring tools is that its primary use is to be "played" in a focused, direct learning sequence. 
+The most important difference between PathMX and other markdown-based content authoring tools is that its primary use is to be "played" in a focused, direct learning sequence.
 
-Understanding how PahtMX content should be structured from a LX (learner eXperience) perspective is essential to authoring great PathMX experiences.
+Understanding how PathMX content should be structured from an LX (learner eXperience) perspective is essential to authoring great PathMX experiences.
+
+## Reference Docs
+
+Read the reference that matches the surface you are working on:
+
+- [PathMX Markdown](./references/pathmx-markdown.md) — core writing guide: Sources, Blocks, Beats, topmatter, and the extension catalog. Start here.
+- [PathMX Player](./references/pathmx-player.md) — the guided player UX: focus levels, navigation, pacing, and authoring for Play.
+- [Literate Components](./references/pathmx-literate-components.md) — defining and using custom tags, component state, and scripts.
+- [Directives](./references/pathmx-directives.md) — `@include` transclusion, imports, resources, and spaceholders.
+- [Questions & Responses](./references/pathmx-questions.md) — question blocks, tasks, and durable learner responses.
+- [Math](./references/pathmx-math.md) — inline/display LaTeX math.
+- [Code](./references/pathmx-code.md) — highlighting, fence flags, and code focus steps.
+- [Media](./references/pathmx-media.md) — images, image directives, generated images, and icons.
+- [Styling](./references/pathmx-styling.md) — style imports, theme tokens, fonts, and color modes.
+- [Config](./references/pathmx-config.md) — roots, plugins, and repository configuration.
+- [Tooling & Verification](./references/pathmx-tooling.md) — CLI usage and verifying that authored content builds and plays.
+- [Repo Example](./references/pathmx-repo-example/pathmx-repository.md) — an example repository layout with type hints.
 

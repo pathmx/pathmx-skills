@@ -1,10 +1,20 @@
 # PathMX Markdown
 
-PathMX supports full CommonMark and GFM out-of-the box. It also supports several unique extensions that should be used where approprate.
+PathMX supports full CommonMark and GFM out-of-the box. It also supports several unique extensions that should be used where appropriate.
 
-The overall goal when creating PathMX markdown is that it should serve as a human and agent readable canonical source for the topic being covered. It should render in most markdown tools like Obsidian or in browse mode on Github with more advanced/interactive interactions authored using html/css and PathMX "literate components" (see below).
+The overall goal when creating PathMX markdown is that it should serve as a human and agent readable canonical source for the topic being covered. It should render in most markdown tools like Obsidian or in browse mode on GitHub, with more advanced/interactive interactions authored using html/css and PathMX "literate components" (see below).
 
-## Core Concepts
+## Key PathMX Concepts
+
+PathMX parses and builds markdown source files into a `Source > Blocks > Beats` structure that is used by the [PathMX player](./pathmx-player.md) to guide the user through a learning experience in an interactive and focused way.
+
+---
+
+### Sources
+
+A PathMX source is a markdown file with a type hint (either a type-hinted file name or frontmatter-specified type). A PathMX source automatically processes metadata, hash and other data and builds its content into blocks.
+
+---
 
 ### Blocks
 
@@ -43,7 +53,7 @@ Block topmatter may also carry local `play:` overrides (density, table steps). B
 #### Authoring for Play (LX)
 
 - One Block ≈ one slide-sized idea / one completable win.
-- Prefer a clear heading plus a handful of Beats over a long essay that becomes a tall scroll. That said, longer content may be neccessary for more long-form work.
+- Prefer a clear heading plus a handful of Beats over a long essay that becomes a tall scroll. That said, longer content may be necessary for more long-form work.
 - **Split** when the idea or topic changes, the practice loop changes, the modality changes (prose → code → quiz), or the content would honestly be two slides.
 - **Keep together** when setup and punchline need one establishing shot or a complete work needs to be focused on and finished.
 - Rough Beat budget: a few step Beats per Block (paragraphs, list items, media, one table or fence) — not dozens. Mega-lists and multi-table Blocks explode the Play route; split the Block or opt density down with `play.steps`.
@@ -59,7 +69,9 @@ Block topmatter may also carry local `play:` overrides (density, table steps). B
 
 Density, fence steps, table steps, and addressable Beat ids are covered under Beats. Literate component states belong in [Literate Components](./pathmx-literate-components.md).
 
-#### Beats
+---
+
+### Beats
 
 A **Beat** is one focusable Play stop inside a **Block** — like a step on a slide, a bullet in a list, or a paragraph in a document. PathMX’s build choreographer annotates rendered HTML; the Player only reads those annotations (`data-pathmx-beat*`). It never invents beats from bare DOM.
 
@@ -99,7 +111,7 @@ Addressing: beat ids look like `{blockId}:heading-0`, `{blockId}:step-0`, `{bloc
 
 ### Root Sources
 
-Root sources are entry points into a knowledge graph that PathMX usees to project a build for a player.
+A root Source is an entry point to the PathMX repository. PathMX defaults to `paths/index.path.md` as the entry point but other roots can be specified via the CLI or configured in [PathMX config](./pathmx-config.md).
 
 
 ### Index Files
@@ -110,7 +122,12 @@ Root sources are entry points into a knowledge graph that PathMX usees to projec
 # Specific Extensions/Plugins
 
 - [Literate Components](./pathmx-literate-components.md)
+- [Directives (includes, imports, spaceholders)](./pathmx-directives.md)
+- [Questions & Responses](./pathmx-questions.md)
 - [Math](./pathmx-math.md)
 - [Media & Images](./pathmx-media.md)
 - [Code](./pathmx-code.md)
+- [Styling & Theming](./pathmx-styling.md)
+
+For the guided player UX and pacing, see the [PathMX Player](./pathmx-player.md) guide. For CLI usage and build verification, see [Tooling & Verification](./pathmx-tooling.md).
 
