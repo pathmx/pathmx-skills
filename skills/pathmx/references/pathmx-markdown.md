@@ -110,7 +110,7 @@ Root sources are entry points into a knowledge graph that PathMX usees to projec
 # Specific Extensions/Plugins
 
 - [Literate Components](./pathmx-literate-components.md)
+- [Code](./pathmx-code.md)
 - [Math](./pathmx-math.md)
 - [Media & Images](./pathmx-media.md)
 - [Code](./pathmx-code.md)
-
