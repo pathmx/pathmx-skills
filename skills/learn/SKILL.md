@@ -6,38 +6,84 @@ argument-hint: "What would you like to learn?"
 adapted-from: https://github.com/mattpocock/skills/blob/main/skills/productivity/teach/SKILL.md
 ---
 
-<!-- TODO: should we install the pathmx skill/reference it somehow here and make sure the agent knows to use it when authoring content -->
-
 # Make Paths
 
-This skill creates interactive, immersive, personalized learning paths based on what a user wants to learn. This creates a knowledge repository that is maintained over time and can serve as a home base for all of the user's learning goals and material. These paths are built with PathMX (Paths Markdown eXtension)
+This skill creates interactive, immersive, personalized learning paths based on what a user wants to learn. This creates a knowledge repository that is maintained over time and can serve as a home base for all of the user's learning goals and material. These paths are built with PathMX (Paths Markdown eXtension).
 
-This creates a learning paths inside a pathmx repository. Use the `/pathmx` 
+This creates learning paths inside a PathMX repository. Use the `/pathmx` skill when authoring PathMX content.
 
-- Start with a broad what would you like to learn about?
-- Help the learner narrow it down to a specific-outcome focused actionable goal. Keep drilling down until you get a shared goal concesses. If the learner just wants to explore a topic that is also fine but should be a stated.
-- Once enough information has started 
-- We need to assess where the learner is and wants to go before making the A->B 
-    - Find Point A: Where is the learner starting in the desired domain (asses what they have using questions or evidence of learning). Encourage the learner to share links, projects, artifacts. We will reference these links later so add them to the user's learning records log (see below for how). 
-    - Find Point B: This is the outcome/goal of the learning path. It shoudl be specific enough to be mearuable and have a basic rubric
+## The Learning Loop
 
-Don't build the whole path up front, just outline the overall path structure and the next few steps (a step in a path is a single lesson file/folder.)
+Everything this skill does is one loop, applied at two levels:
 
-From here, we will create a path per 
+1. **Assess position** — where is the learner now?
+2. **Aim** — set a measurable target (B) with evidence criteria.
+3. **Experience** — build and play a lesson at the proximal edge.
+4. **Assess outcome** — did the evidence meet the target? If not, remediate and loop.
+5. **Record & advance** — log the evidence, move the current position forward, and re-aim if needed.
 
-## Learning Path IA:
+The **path** runs this loop over the whole journey: its A is captured at intake and kept in `path.outcome.md` as the baseline, alongside its B. Each **lesson** runs the same loop in miniature: its A is the current position tracked in `index.path.md`, and its B is the lesson outcome checked by `lesson.assessment.md`.
 
-A learning path is a `*.path.md`, usually `index.path.md` covering A->B points for a learner and outcome.
+The two levels feed each other:
 
-- Path: The overal learning from A -> B
-    - Modules/Units/Groups (weeks, lessons)
-        - Steps: a actionable unit of focuesed work, can ideally be done in one session and has a tight outcome
-            - Blocks: Blocks are the content within a step (like slides) that guide the user through the experience
-            
+- Closing a lesson loop **advances the path's current position** in `index.path.md`.
+- Lesson evidence may reveal that the path's B should change — the learner discovers what they actually want. That is healthy, but never silent: **renegotiate B with the learner explicitly and record the change in `learning.activity.md`**.
+
+The loop stops at the lesson level. Blocks and Beats do not get A/B points — pacing inside a lesson belongs to PathMX Play (see the /pathmx skill).
+
+This is also why the path is never built ahead: the next lesson's A does not exist until the current loop closes.
+
+## Workflow
+
+Before starting, make sure there is a PathMX repository already scaffolded, running, and up-to-date. See the pathmx skill for details.
+
+### Returning sessions
+
+If the workspace already has a path in progress, re-enter the loop where it paused before teaching anything new:
+
+1. Read `learner.persona.md`, `learning.activity.md`, and the active path's `index.path.md`.
+2. Greet the learner with a short "here's where we left off" recap.
+3. Warm up with 2-3 quick recall prompts drawn from earlier lessons.
+4. Continue from wherever the path index says the learner is.
+
+### Starting a new path
+
+Steps 1-4 open the outer loop (assess A, aim B). Steps 5-10 are one full lesson loop — repeat them for each lesson until the path's B is met.
+
+1. Start with a broad question: ask the user "what would you like to learn about?"
+2. From there, help the learner narrow it down to a specific, outcome-focused, actionable goal. Keep drilling down until you reach a shared consensus on the goal and an actionable outcome. If the learner just wants to explore a topic, that is also fine, but it should be well-stated.
+3. Next, we should define the A->B (start and destination) points for the path.
+    - **Find Point A:** Where is the learner starting in the desired domain? Keep the interview brief and prefer assess-by-doing: a short diagnostic lesson in the player yields better evidence than a questionnaire and gives the learner something to play in the very first session. Encourage the learner to share links, projects, and artifacts. We will reference these links later, so add them to the user's learning records log (see below for how).
+    - **Find Point B:** This is the outcome/goal of the learning path. It should be specific enough to be measurable and have a basic rubric.
+4. Once A/B information has been collected, start by creating (or updating) the path folder/index.path.md with an outline of what will be taught. Do not prepare or link the lesson, yet. Just the outline.
+5. Prepare the next lesson. Based on where the learner is (A-point), prepare a lesson that is on the **proximal edge** towards the next point. Unless it is the first lesson, open it with 2-3 retrieval prompts from earlier lessons. Use the /pathmx authoring skill to make the lesson block-by-block (so the learner can watch it build in their player).
+6. Prepare an assessment that will gauge whether the learner has successfully learned the key outcome of the lesson.
+7. Once the lesson and assessment are prepared, ask the learner if they are ready to start and preview what they will be able to do by the end.
+8. Help the learner get through the lesson by asking questions, checking for learner input (if present), and responding to any questions the learner has. Update the lesson as needed to help the learner understand. Update the assessment as needed when the lesson changes.
+9. Once the learner is ready to move on, point them to the assessment and gate any further lessons until they have adequately demonstrated their skill. If the assessment reveals gaps, do not simply repeat it: revise the lesson, or insert a smaller intermediate lesson targeting the gap, then re-assess.
+10. Finally, record the completion: mark the lesson complete in `index.path.md` so progress is visible on the path, and add a record to `paths/learning.activity.md` linking to the lesson and any learning artifacts, along with a summary of what was accomplished.
+
+<!-- should we prompt to setup a progress-checking automation/schedule task? -->
+
+Don't build the whole path up front; outline the overall structure and build only the next lesson or two, so the path can adapt to what the assessments reveal.
+
+## Learning Path IA
+
+A learning path is a `*.path.md`, usually `index.path.md`, covering A->B points for a learner and outcome.
+
+- Path: the overall learning from A -> B
+    - Lessons: an actionable unit of focused work; ideally completable in one session with a tight outcome
+        - Blocks: the content within a lesson (like slides) that guides the learner through the experience
+
+When a path grows large enough to need grouping, organize lessons into modules/units (weeks, themes) as sections of `index.path.md` — modules are an organizational view of the index, not a folder layer.
+
+Avoid calling path-level units "steps": step already has a specific meaning in PathMX Play (step focus, code/table steps).
+
 ```text
 paths/
 ├── learner.persona.md          # learner profile
 ├── learning.activity.md        # global learning record
+├── theme.css                   # a nice theme for the learning space
 └── <path-name>/
     ├── index.path.md           # path structure + progress
     ├── path.outcome.md         # goal, outcome, rubric
@@ -51,130 +97,21 @@ paths/
 ```
 
 - **`learner.persona.md`** — the learner's profile: name, bio, avatar (if provided), goals, motivations, personality details, preferences, etc.
-- **`learning.activity.md`** — the global record of learning activity/evidence across all paths. Each record is its own block, notes what was learned, and links to the relevant lesson, assessment, and evidence material. In some cases evidence should be snapshotted as its own PathMX source (`*.evidence.md`) and linked from the record.
-- **`index.path.md`** — the overall structure of the path, with links to each active lesson; tracks overall progress.
-- **`path.outcome.md`** — the overall goal and outcome, plus a rubric for evaluating the result.
+- **`learning.activity.md`** — the global record of learning activity/evidence across all paths, including any renegotiations of a path's B. Each record is its own block, notes what was learned, and links to the relevant lesson, assessment, and evidence material. In some cases evidence should be snapshotted as its own PathMX source (`*.evidence.md`) and linked from the record.
+- **`index.path.md`** — the overall structure of the path, with links to each active lesson; tracks the current position (the moving A of the lesson loop).
+- **`path.outcome.md`** — the A-point baseline and the overall goal/outcome (the path's B), plus a rubric for evaluating the result.
 - **`lessons/`** — individual lessons used by the path.
   - **`lesson.assessment.md`** — the evaluation of the learner to check they really know the topic; can be quiz/question based and/or backed by uploaded/local evidence.
 - **`references/`** — reference/support materials that back up lesson content; usable as learning resources or as material for building out new lessons.
 
 ## Philosophy/Pedagogy
 
-To learn at a deep level, the user needs three things:
-
-- **Information**, captured from high-quality, high-trust resources
-- **Knowledge**: the vocabulary and key information that make up a skill or knowledge domain.
-- **Skills**, acquired through highly-relevant interactive lessons devised by you, based on the information
-- **Wisdom**, which comes from experience over time and is demonstrated by real-world outcomes and evidence.
-
-Before the path's `index.references.md` is well-populated, your focus should be to find high-quality resources which will help the user acquire information that leads to knowledge. Never trust your parametric knowledge.
-
-Some topics may require more skills than knowledge. Learning more about theoretical physics might be more knowledge-based. For yoga, more skills-based.
-
-### Fluency vs Storage Strength
-
-You should be careful to split between two types of learning:
-
-- **Fluency strength**: in-the-moment retrieval of knowledge
-- **Storage strength**: long-term retention of knowledge
-
-Fluency can give the user an illusory sense of mastery, but storage strength is the real goal. Try to design lessons which build long-term retention by desirable difficulty:
-
-- Using retrieval practice (recall from memory)
-- Spacing (distributing practice over time)
-- Interleaving (mixing up different but related topics in practice - for skills practice only)
-
-## Lessons
-
-A lesson is the main thing you produce — the unit in which knowledge and skills reach the user. Each lesson is one self-contained HTML file, saved to `./lessons/` and titled `0001-<dash-case-name>.html` where the number increments each time.
-
-A lesson should be **beautiful** — clean, readable typography and layout — since the user will return to these later to review. Think Tufte.
-
-The lesson should be short, and completable very quickly. Learners' working memory is very small, and we need to stay within it. But each lesson should give the user a single tangible win that they can build on. It should be directly tied to the mission, and should be in the user's zone of proximal development.
-
-If possible, open the lesson file for the user by running a CLI command.
-
-Each lesson should link via HTML anchors to other lessons and reference documents.
-
-Each lesson should recommend a primary source for the user to read or watch. This should be the most high-quality, high-trust resource you found on the topic.
-
-Each lesson should contain a reminder to ask followup questions to the agent. The agent is their teacher, and can assist with anything that's unclear.
-
-## Assets
-
-Lessons are built from reusable **components**, stored in `./assets/`: stylesheets, quiz widgets, simulators, diagram helpers — anything a second lesson could reuse.
-
-Reuse is the default, not the exception. Before authoring a lesson, read `./assets/` and build from the components already there. When a lesson needs something new and reusable, write it as a component in `./assets/` and link to it — never inline code a future lesson would duplicate.
-
-A shared stylesheet is the first component every workspace earns: every lesson links it, so the lessons look like one consistent course rather than a pile of one-offs. As the workspace grows, so should the component library.
-
-## The Mission
-
-Every lesson should be tied into the mission - the reason that the user is interested in learning about the topic.
-
-If the user is unclear about the mission, or the `MISSION.md` is not populated, your first job should be to question the user on why they want to learn this.
-
-Failing to understand the mission will mean knowledge acquisition is not grounded in real-world goals. Lessons will feel too abstract. You will have no way of judging what the user should do next.
-
-Missions may change as the user develops more skills and knowledge. This is normal - make sure to update the `MISSION.md` and add a learning record to capture the change. Confirm with the user before changing the mission.
-
-## Zone Of Proximal Development
-
-Each lesson, the user should always feel as if they are being challenged 'just enough'.
-
-The user may specify an exact thing they want to learn. If they don't, figure out their zone of proximal development by:
-
-- Reading their `learning-records`
-- Figuring out the right thing to teach them based on their mission
-- Teach the most relevant thing that fits in their zone of proximal development
-
-## Knowledge
-
-Lessons should be designed around a skill the user is going to learn. The knowledge in the lesson should be only what's required to acquire that skill. You teach the knowledge first, then get the user to practice the skills via an interactive feedback loop.
-
-Knowledge should first be gathered from trusted resources. Use `RESOURCES.md` to keep track of them. Lessons should be littered with citations - links to external resources to back up any claim made. This increases the trustworthiness of the lesson.
-
-For acquiring knowledge, difficulty is the enemy. It eats working memory you need for understanding.
-
-## Skills
-
-If knowledge is all about acquisition, skills are about durability and flexibility. Make the knowledge stick.
-
-For skill acquisition, difficulty is the tool. Effortful retrieval is what builds storage strength. Skills should be taught through interactive lessons. There are several tools at your disposal:
-
-- Interactive lessons, using quizzes and light in-browser tasks
-- Lessons which guide the user through a list of real-world steps to take (for instance, yoga poses)
-
-Each of these should be based on a **feedback loop**, where the user receives feedback on their performance. This feedback loop should be as tight as possible, giving feedback immediately - and ideally automatically.
-
-For quizzes, each answer should be exactly the same number of words (and characters, if possible). Don't give the user any clues about the answer through formatting.
-
-## Acquiring Wisdom
-
-Wisdom comes from true real-world interaction - testing your skills outside the learning environment.
-
-When the user asks a question that appears to require wisdom, your default posture should be to attempt to answer - but to ultimately delegate to a **community**.
-
-A community is a place (online or offline) where the user can test their skills in the real world. This might be a forum, a subreddit, a real-world class (budget permitting) or a local interest group.
-
-You should attempt to find high-reputation communities the user can join. If the user expresses a preference that they don't want to join a community, respect it.
-
-## Reference Documents
-
-While creating lessons, you should also create reference documents. Lessons can reference these documents - they are useful for tracking raw units of knowledge useful across lessons.
-
-Lessons will rarely be revisited later - reference documents will be. They should be the compressed essence of the lesson, in a format designed for quick reference.
-
-Some learning topics lend themselves to reference:
-
-- Syntax and code snippets for programming
-- Algorithms and flowcharts for processes
-- Yoga poses and sequences for yoga
-- Exercises and routines for fitness
-- Glossaries for any topic with its own nomenclature
-
-Glossaries, in particular, are an essential reference. Once one is created, it should be adhered to in every lesson.
-
-## `NOTES.md`
-
-The user will sometimes express preferences of how they want to be taught, or things you should keep in mind. This is the place to record those preferences, so you can refer back to them when designing lessons or working with the user.
+- **Backward design.** Define the outcome and rubric (Point B) before any content. Every lesson should trace to the outcome.
+- **Zone of proximal development.** Teach at the proximal edge, where the learner is challenged just enough. Locate that edge with A-point evidence and assessment results, not assumptions.
+- **Knowledge, then skill, through a tight feedback loop.** Teach only the knowledge required for the skill at hand, then have the learner practice with immediate feedback: answers, quizzes, agent checks, or real artifacts. For acquiring knowledge, difficulty is the enemy; for practicing skills, difficulty is the tool.
+- **Storage strength over fluency.** In-the-moment recall (fluency) creates an illusion of mastery; long-term retention (storage strength) is the goal. Build it with desirable difficulty:
+  - *Retrieval practice* — recalling from memory beats re-reading; hence the warm-up prompts.
+  - *Spacing* — revisit earlier material across sessions instead of massing practice.
+  - *Interleaving* — mix related skills in practice once there is more than one to mix.
+- **Small, concrete wins.** Working memory is limited. Each lesson delivers one tangible, completable win the learner can build on.
+- **Evidence over impressions.** Gate progression on demonstrated skill, record it in the learning records, and let the records — not memory — drive what comes next.
