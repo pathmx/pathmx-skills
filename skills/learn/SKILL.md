@@ -29,6 +29,8 @@ The two levels feed each other:
 - Closing a lesson loop **advances the path's current position** in `index.path.md`.
 - Lesson evidence may reveal that the path's B should change — the learner discovers what they actually want. That is healthy, but never silent: **renegotiate B with the learner explicitly and record the change in `learning.activity.md`**.
 
+Progress is a spiral, not a line. Closing a loop does more than move the marker forward — it elevates the learner's vantage: new capabilities, new questions, sometimes a changed goal. That is why B renegotiation is normal, and why each loop closes with a **synthesis** (workflow step 10) rather than a checkmark. The synthesis — not the checkmark — is what carries forward as the next lesson's A.
+
 The loop stops at the lesson level. Blocks and Beats do not get A/B points — pacing inside a lesson belongs to PathMX Play (see the /pathmx skill).
 
 This is also why the path is never built ahead: the next lesson's A does not exist until the current loop closes.
@@ -41,10 +43,10 @@ Before starting, make sure there is a PathMX repository already scaffolded, runn
 
 If the workspace already has a path in progress, re-enter the loop where it paused before teaching anything new:
 
-1. Read `learner.persona.md`, `learning.activity.md`, and the active path's `index.path.md`.
+1. Read `learner.persona.md`, `learning.activity.md` (especially the most recent synthesis record), and the active path's `index.path.md`.
 2. Greet the learner with a short "here's where we left off" recap.
 3. Warm up with 2-3 quick recall prompts drawn from earlier lessons.
-4. Continue from wherever the path index says the learner is.
+4. Continue from the position in the path index, informed by the last synthesis.
 
 ### Starting a new path
 
@@ -56,12 +58,12 @@ Steps 1-4 open the outer loop (assess A, aim B). Steps 5-10 are one full lesson 
     - **Find Point A:** Where is the learner starting in the desired domain? Keep the interview brief and prefer assess-by-doing: a short diagnostic lesson in the player yields better evidence than a questionnaire and gives the learner something to play in the very first session. Encourage the learner to share links, projects, and artifacts. We will reference these links later, so add them to the user's learning records log (see below for how).
     - **Find Point B:** This is the outcome/goal of the learning path. It should be specific enough to be measurable and have a basic rubric.
 4. Once A/B information has been collected, start by creating (or updating) the path folder/index.path.md with an outline of what will be taught. Do not prepare or link the lesson, yet. Just the outline.
-5. Prepare the next lesson. Based on where the learner is (A-point), prepare a lesson that is on the **proximal edge** towards the next point. Unless it is the first lesson, open it with 2-3 retrieval prompts from earlier lessons. Use the /pathmx authoring skill to make the lesson block-by-block (so the learner can watch it build in their player).
-6. Prepare an assessment that will gauge whether the learner has successfully learned the key outcome of the lesson.
+5. Prepare the next lesson. Its A comes from the current position *and* the most recent synthesis — not just "previous lesson: done". Record the lesson's own loop in its frontmatter as `start:` and `destination:` (one sentence each, phrased as learner capability). Prepare a lesson that is on the **proximal edge** towards the destination. Unless it is the first lesson, open it with 2-3 retrieval prompts from earlier lessons. Use the /pathmx authoring skill to make the lesson block-by-block (so the learner can watch it build in their player).
+6. Prepare an assessment that will gauge whether the learner has reached the lesson's `destination`.
 7. Once the lesson and assessment are prepared, ask the learner if they are ready to start and preview what they will be able to do by the end.
 8. Help the learner get through the lesson by asking questions, checking for learner input (if present), and responding to any questions the learner has. Update the lesson as needed to help the learner understand. Update the assessment as needed when the lesson changes.
 9. Once the learner is ready to move on, point them to the assessment and gate any further lessons until they have adequately demonstrated their skill. If the assessment reveals gaps, do not simply repeat it: revise the lesson, or insert a smaller intermediate lesson targeting the gap, then re-assess.
-10. Finally, record the completion: mark the lesson complete in `index.path.md` so progress is visible on the path, and add a record to `paths/learning.activity.md` linking to the lesson and any learning artifacts, along with a summary of what was accomplished.
+10. Finally, record the completion: mark the lesson complete in `index.path.md` so progress is visible on the path, and add a **synthesis** record to `paths/learning.activity.md` linking to the lesson and any learning artifacts. A synthesis records three things: what was learned (the evidence), what changed in how the learner sees the domain or the goal, and what this opens up next. That third element seeds the next lesson's A.
 
 <!-- should we prompt to setup a progress-checking automation/schedule task? -->
 
@@ -97,12 +99,23 @@ paths/
 ```
 
 - **`learner.persona.md`** — the learner's profile: name, bio, avatar (if provided), goals, motivations, personality details, preferences, etc.
-- **`learning.activity.md`** — the global record of learning activity/evidence across all paths, including any renegotiations of a path's B. Each record is its own block, notes what was learned, and links to the relevant lesson, assessment, and evidence material. In some cases evidence should be snapshotted as its own PathMX source (`*.evidence.md`) and linked from the record.
+- **`learning.activity.md`** — the global record of learning activity/evidence across all paths, including any renegotiations of a path's B. Each record is its own block, written as a synthesis (evidence, shift in perspective, what it opens next), and links to the relevant lesson, assessment, and evidence material. In some cases evidence should be snapshotted as its own PathMX source (`*.evidence.md`) and linked from the record.
 - **`index.path.md`** — the overall structure of the path, with links to each active lesson; tracks the current position (the moving A of the lesson loop).
 - **`path.outcome.md`** — the A-point baseline and the overall goal/outcome (the path's B), plus a rubric for evaluating the result.
-- **`lessons/`** — individual lessons used by the path.
-  - **`lesson.assessment.md`** — the evaluation of the learner to check they really know the topic; can be quiz/question based and/or backed by uploaded/local evidence.
+- **`lessons/`** — individual lessons used by the path. Each `index.lesson.md` records its own loop in frontmatter as `start:` and `destination:` — one sentence each, phrased as learner capability, written when the lesson is authored and left as a historical snapshot. The live position belongs to `index.path.md`; measurable criteria belong to the assessment.
+
+  ```yaml
+  ---
+  type: lesson
+  start: Can write single-table SELECT queries; joins are unfamiliar
+  destination: Can combine two tables with INNER and LEFT JOIN and explain the difference
+  ---
+  ```
+
+  - **`lesson.assessment.md`** — the evaluation of the learner against the lesson's `destination`; can be quiz/question based and/or backed by uploaded/local evidence.
 - **`references/`** — reference/support materials that back up lesson content; usable as learning resources or as material for building out new lessons.
+
+See [example.md](./example.md) for a worked example of these files mid-path: a closed lesson loop with its synthesis, an active lesson with `start`/`destination` frontmatter, and a recorded B renegotiation.
 
 ## Philosophy/Pedagogy
 
