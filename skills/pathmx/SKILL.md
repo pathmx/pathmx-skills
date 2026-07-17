@@ -19,24 +19,18 @@ PathMX is both a methodology and a development framework. The methodology can be
 
 ## Motivation
 
-PathMX is meant to standardize the way learning content is authored and viewed for agents and humans.
+PathMX is meant to standardize the way learning content is authored and consumed by agents and humans.
 
-Its goals overalp with OKF and other knowledge standards.
+PathMX is a curriculum-as-code methodology that is:
 
-PathMX is:
-
-- **Readable** by humans without tooling.
-- **Parseable** by agents without bespoke SDKs.
-- **Diffable** in version control.
+- **Human-readable** without extra tooling.
+- **Parseable** by agents and tools.
+- **Diffable** in normal version control.
 - **Portable** across tools, organizations, and time.
 
-The format is minimally opinionated. It standardizes only the small set
-of structural conventions needed to make a knowledge corpus
-*self-describing* — anything beyond that is left to the producer.
-
+The methodology is minimally opinionated. It standardizes only the small set of structural conventions needed to make a knowledge graph  *self-describing*; anything beyond that is left to the producer.
 
 ## Methodology
-
 
 # PathMX Methodology
 

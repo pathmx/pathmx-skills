@@ -14,7 +14,7 @@ A **Block** is a thematic unit of content — like a slide, or a one-sheet tutor
 
 - Split Blocks with a lone `---` on its own line, **with blank lines above and below**. A `---` that is not blank-line-isolated is not a Block boundary.
 - Do not confuse **source frontmatter** (a YAML fence at the top of the file) with **block topmatter** (optional YAML-ish keys at the start of a Block, before its body).
-- Give Blocks you may link to or resume a stable `id:` in topmatter. Ordinal-only identities churn when Blocks are reordered.
+- Give Blocks you may link to or resume a stable `id:` in topmatter. Otherwise PathMX will use a default ordinal-based identity.
 
 ```md
 id: photosynthesis-inputs
@@ -44,8 +44,8 @@ Block topmatter may also carry local `play:` overrides (density, table steps). B
 
 - One Block ≈ one slide-sized idea / one completable win.
 - Prefer a clear heading plus a handful of Beats over a long essay that becomes a tall scroll. That said, longer content may be neccessary for more long-form work.
-- **Split** when the idea changes, the practice loop changes, the modality changes (prose → code → quiz), or the content would honestly be two slides.
-- **Keep together** when setup and punchline need one establishing shot.
+- **Split** when the idea or topic changes, the practice loop changes, the modality changes (prose → code → quiz), or the content would honestly be two slides.
+- **Keep together** when setup and punchline need one establishing shot or a complete work needs to be focused on and finished.
 - Rough Beat budget: a few step Beats per Block (paragraphs, list items, media, one table or fence) — not dozens. Mega-lists and multi-table Blocks explode the Play route; split the Block or opt density down with `play.steps`.
 - Headings are browse stops, not structure. Use `---` to structure Play; do not spam headings to fake Block boundaries.
 
@@ -112,5 +112,5 @@ Root sources are entry points into a knowledge graph that PathMX usees to projec
 - [Literate Components](./pathmx-literate-components.md)
 - [Math](./pathmx-math.md)
 - [Media & Images](./pathmx-media.md)
-
+- [Code](./pathmx-code.md)
 
