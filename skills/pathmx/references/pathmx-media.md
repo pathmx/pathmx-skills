@@ -1,34 +1,5 @@
 # PathMX Media
 
-<<<<<<< HEAD
-<!-- TODO: draft. Ground truth: pathmx repo — packages/plugins/image/src/
-     (directives + generation), plugins/core/spaceholders/. -->
-
-Images, figures, media beats, and image directives.
-
-## Plain markdown media
-
-<!-- TODO: normal `![Alt](./x.png)` images, local paths tracked as build
-     dependencies; figures and bare img/video/audio each become one media
-     Beat in Play. -->
-
-## Image presentation directives
-
-<!-- TODO: layout-only directives (opt-in image plugin):
-     `![@image.cover: Alt](./x.png)`, `![@image.background: cover](./x.png)`,
-     `@image.wide`. Don't stack competing presentation stages on one image. -->
-
-## Generated images
-
-<!-- TODO: attach an @spaceholder HTML comment to a normal image
-     (prompt, aspect ratio); see pathmx-directives.md for the directive and
-     pipeline forms. Keep alt text human-readable; params live in the comment. -->
-
-## Icons
-
-<!-- TODO: opt-in Lucide plugin: `:lucide-file-input:` shortcodes, optional
-     accessible label `:lucide-arrow-left[Back]:`; kebab-case names. -->
-=======
 PathMX supports standard Markdown images and HTML `figure`, `img`, `video`, and `audio` elements. Use Markdown for simple images and HTML when you need captions or playback controls.
 
 Media is automatically treated as a PathMX Beat. A complete `figure` is one Beat; an image inside that figure does not become a second Beat.
@@ -136,5 +107,4 @@ Keeping the complete figure on one line makes it one verified PathMX media Beat.
 - Use `preload="metadata"` for audio and video unless immediate loading is necessary.
 - Preview the page with `pathmx dev` or `pathmx play` and test every media control.
 
-PathMX-specific image directives are not yet documented in this repository. Until they are, prefer the standard Markdown and HTML forms above.
->>>>>>> ec6fcfae12287828c8de6e666c1e8f1387c022a2
+PathMX-specific image presentation directives (`@image.cover`, `@image.background`, `@image.wide`) come from the opt-in image plugin. Prefer the standard Markdown and HTML forms above unless a directive is specifically needed.

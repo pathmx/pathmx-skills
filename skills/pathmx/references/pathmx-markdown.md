@@ -109,6 +109,28 @@ Special authoring:
 Addressing: beat ids look like `{blockId}:heading-0`, `{blockId}:step-0`, `{blockId}:code-0`, `{parentId}:step-1`. In Play, focus is owned by the URL via `?play=<BeatId>` (`?play` / `?play=1` enters at the normal entry beat). Heading `#fragment` is separate browse/scroll targeting.
 
 
+### Links
+
+<!-- TODO: draft. Linking is how PathMX builds and interprets the graph. All of
+     it is standard markdown link syntax — PathMX assigns meaning by position
+     and label:
+
+     1. Inline links = graph edges. A relative link to another source
+        (`[Next lab](./loops.lab.md)`) creates a navigable edge; PathMX
+        rewrites known source links to routes. A link plus trailing prose in a
+        list = an annotated edge (the hub/path pattern in *.path.md files).
+     2. Image/asset links = build dependencies. Relative asset paths are
+        tracked and copied into the build.
+     3. Reference DEFINITION links with an `@` label = directives/imports:
+        `[@styles]: ./x.css`, `[@widgets]: ./w.components.md`,
+        `[@include.note]: ./shared.md#note`. Same markdown syntax, different
+        role — see pathmx-directives.md for each directive.
+
+     Also cover: targeting a Block with `#block-id` vs a Beat with
+     `?play=<BeatId>`; `related:` frontmatter as non-prose edges; wikilinks
+     `[[Target]]` as an opt-in alternative; keep links relative so graph-aware
+     tools (`pathmx mv`) can rewrite them. -->
+
 ### Root Sources
 
 A root Source is an entry point to the PathMX repository. PathMX defaults to `paths/index.path.md` as the entry point but other roots can be specified via the CLI or configured in [PathMX config](./pathmx-config.md).
@@ -122,8 +144,7 @@ A root Source is an entry point to the PathMX repository. PathMX defaults to `pa
 # Specific Extensions/Plugins
 
 - [Literate Components](./pathmx-literate-components.md)
-<<<<<<< HEAD
-- [Directives (includes, imports, spaceholders)](./pathmx-directives.md)
+- [Directives (includes, imports, resources)](./pathmx-directives.md)
 - [Questions & Responses](./pathmx-questions.md)
 - [Math](./pathmx-math.md)
 - [Media & Images](./pathmx-media.md)
@@ -131,10 +152,3 @@ A root Source is an entry point to the PathMX repository. PathMX defaults to `pa
 - [Styling & Theming](./pathmx-styling.md)
 
 For the guided player UX and pacing, see the [PathMX Player](./pathmx-player.md) guide. For CLI usage and build verification, see [Tooling & Verification](./pathmx-tooling.md).
-
-=======
-- [Code](./pathmx-code.md)
-- [Math](./pathmx-math.md)
-- [Media & Images](./pathmx-media.md)
-- [Code](./pathmx-code.md)
->>>>>>> ec6fcfae12287828c8de6e666c1e8f1387c022a2

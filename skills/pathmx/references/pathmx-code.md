@@ -1,32 +1,5 @@
 # PathMX Code
 
-<<<<<<< HEAD
-<!-- TODO: draft. Ground truth: pathmx repo — plugins/core/code-highlight/,
-     plugin-backed-authoring reference (code focus steps). -->
-
-Code fences: highlighting, fence flags, and authored reveal steps for Play.
-
-## Syntax highlighting
-
-<!-- TODO: standard fenced code with a language tag; highlighting is an opt-in
-     plugin (`codeHighlight`) — check project config. -->
-
-## Fence flags
-
-<!-- TODO: `no-copy`, `no-select` in fence info; stripped before render. -->
-
-## Code focus steps (Play)
-
-<!-- TODO: reveal.js-style step spec after the language in fence info, e.g.
-     ```js [1-2|3]. `|` separates steps; within a step, commas and `N-M`
-     ranges light lines together. 1-based, inclusive. Each step needs ≥1 valid
-     line; invalid specs warn. Steps become child `code-step` Beats. -->
-
-## Play density
-
-<!-- TODO: a plain fence is one Beat; `play.steps.code: none` removes fences
-     from the route entirely. -->
-=======
 PathMX uses standard fenced Markdown code blocks. Add a language after the opening fence for syntax highlighting. PathMX automatically makes each fence one Code Beat in Player mode.
 
 ## Quick reference
@@ -236,4 +209,3 @@ Use this sparingly; instructional code usually benefits from being focusable.
 - Never place secrets, credentials, or destructive commands in copyable examples.
 
 Preview code with `pathmx play`. Check the highlighting, copy control, and every authored line step before publishing.
->>>>>>> ec6fcfae12287828c8de6e666c1e8f1387c022a2

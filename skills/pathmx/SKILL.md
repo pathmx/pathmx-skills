@@ -43,7 +43,6 @@ The methodology is minimally opinionated. It standardizes only the small set of 
 | **Play** | The guided mode of the player: focused, step-by-step traversal of Blocks and Beats. Contrast with **browse** (free scroll). |
 | **Directive** | An `@`-prefixed marker on a markdown link or reference definition (`[@include: …]`, `[@styles]:`) that gives it PathMX behavior. |
 | **Literate component** | A reusable custom tag defined in a `*.component(s).md` file as prose + `html`/`css`/`js` fences. |
-| **Spaceholder** | An authored placeholder (attached `@spaceholder` comment) that an agent or tool fills with generated content. |
 
 ## Methodology
 
@@ -117,7 +116,7 @@ Read the reference that matches the surface you are working on:
 - [PathMX Markdown](./references/pathmx-markdown.md) — core writing guide: Sources, Blocks, Beats, topmatter, and the extension catalog. Start here.
 - [PathMX Player](./references/pathmx-player.md) — the guided player UX: focus levels, navigation, pacing, and authoring for Play.
 - [Literate Components](./references/pathmx-literate-components.md) — defining and using custom tags, component state, and scripts.
-- [Directives](./references/pathmx-directives.md) — `@include` transclusion, imports, resources, and spaceholders.
+- [Directives](./references/pathmx-directives.md) — `@include` transclusion, imports, and resources.
 - [Questions & Responses](./references/pathmx-questions.md) — question blocks, tasks, and durable learner responses.
 - [Math](./references/pathmx-math.md) — inline/display LaTeX math.
 - [Code](./references/pathmx-code.md) — highlighting, fence flags, and code focus steps.

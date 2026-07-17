@@ -1,11 +1,11 @@
 # PathMX Directives
 
 <!-- TODO: draft. Ground truth: pathmx repo — plugins/core/{include,styles,
-     resources,spaceholders}/, paths/demos/includes.demo.md. -->
+     resources}/, paths/demos/includes.demo.md. -->
 
 `@`-prefixed directives written as ordinary markdown links and reference
-definitions: includes, imports, resources, and spaceholders. The `@` prefix
-marks a PathMX directive; without it, the same syntax is a normal link.
+definitions: includes, imports, and resources. The `@` prefix marks a PathMX
+directive; without it, the same syntax is a normal link.
 
 ## Includes (transclusion)
 
@@ -28,12 +28,7 @@ marks a PathMX directive; without it, the same syntax is a normal link.
      definition Block; surfaced via `ctx.assets` / `ctx.data`
      (see pathmx-literate-components.md). -->
 
-## Spaceholders (generated content)
-
-<!-- TODO: attached HTML-comment directive on an image or link, e.g. an image
-     followed by an @spaceholder comment carrying `prompt="..."` and `ar=16:9`;
-     explicit `@spaceholder.image` / `@spaceholder.pathmx` forms; pipeline
-     composition with `|` (e.g. spaceholder piped to `@include` or
-     `@image.background`). Keep prompts in the comment, labels human-readable.
-     Nested comment examples can't live inside this TODO comment — show them
-     in fenced code when drafting. -->
+<!-- NOTE: spaceholders (@spaceholder generated-content directives) are
+     deliberately excluded from this skill for now — the design is in flux and
+     has not landed. Do not document or author spaceholder syntax until the
+     final design ships in the pathmx repo. -->
