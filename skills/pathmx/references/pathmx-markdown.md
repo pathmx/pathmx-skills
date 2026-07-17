@@ -122,6 +122,7 @@ A root Source is an entry point to the PathMX repository. PathMX defaults to `pa
 # Specific Extensions/Plugins
 
 - [Literate Components](./pathmx-literate-components.md)
+<<<<<<< HEAD
 - [Directives (includes, imports, spaceholders)](./pathmx-directives.md)
 - [Questions & Responses](./pathmx-questions.md)
 - [Math](./pathmx-math.md)
@@ -131,3 +132,9 @@ A root Source is an entry point to the PathMX repository. PathMX defaults to `pa
 
 For the guided player UX and pacing, see the [PathMX Player](./pathmx-player.md) guide. For CLI usage and build verification, see [Tooling & Verification](./pathmx-tooling.md).
 
+=======
+- [Code](./pathmx-code.md)
+- [Math](./pathmx-math.md)
+- [Media & Images](./pathmx-media.md)
+- [Code](./pathmx-code.md)
+>>>>>>> ec6fcfae12287828c8de6e666c1e8f1387c022a2
