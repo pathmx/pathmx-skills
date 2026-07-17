@@ -1,0 +1,3 @@
+# PathMX Literate Components
+
+PathMX literate components allow PathMX authors to write custom html-like tags for rich curriculum experiences. Literate components are written in normal markdown with descriptive prose and code blocks. The code blocks are "compiled" into the re-usable tag on the fly using the PathMX build pipleine. In a live server scenario, literate components rebuild/hot reload on demand. To use a literate tag, a PathMX document simple needs to link to the components file.

@@ -17,6 +17,24 @@ What you can do with PathMX:
 
 PathMX is both a methodology and a development framework. The methodology can be used without special tooling on any operating system.
 
+## Motivation
+
+PathMX is meant to standardize the way learning content is authored and viewed for agents and humans.
+
+Its goals overalp with OKF and other knowledge standards.
+
+PathMX is:
+
+- **Readable** by humans without tooling.
+- **Parseable** by agents without bespoke SDKs.
+- **Diffable** in version control.
+- **Portable** across tools, organizations, and time.
+
+The format is minimally opinionated. It standardizes only the small set
+of structural conventions needed to make a knowledge corpus
+*self-describing* — anything beyond that is left to the producer.
+
+
 ## Methodology
 
 
