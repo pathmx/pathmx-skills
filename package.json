@@ -2,6 +2,16 @@
   "name": "pathmx-skills",
   "private": true,
   "scripts": {
-    "sync-skills": "bun run scripts/sync-skills.ts"
+    "sync-skills": "bun run scripts/sync-skills.ts",
+    "test": "bun test",
+    "check:links": "bun run scripts/check-markdown-links.ts",
+    "check:skills": "bun run scripts/check-skill-packages.ts",
+    "check:self-contained": "bun run scripts/check-self-contained.ts",
+    "check:pathmx": "bun run scripts/check-pathmx-docs.ts",
+    "check": "bun run check:links && bun run check:skills && bun run check:self-contained && bun run check:pathmx && bun test && git diff --check HEAD"
+  },
+  "devDependencies": {
+    "@fellowhumans/pathmx": "0.1.16",
+    "yaml": "2.9.0"
   }
 }

@@ -1,0 +1,20 @@
+{
+  "schema": "pathmx-skills/manifest",
+  "version": 1,
+  "skills": [
+    {
+      "name": "pathmx",
+      "directory": "skills/pathmx",
+      "invocation": "automatic-and-explicit",
+      "purpose": "Author and verify PathMX sources.",
+      "dependsOn": []
+    },
+    {
+      "name": "path",
+      "directory": "skills/path",
+      "invocation": "explicit",
+      "purpose": "Create and resume one adaptive learning path.",
+      "dependsOn": ["pathmx"]
+    }
+  ]
+}

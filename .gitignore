@@ -1,2 +1,4 @@
 .DS_Store
-.pathmx
+.pathmx/
+.pathmx-check/
+node_modules/
