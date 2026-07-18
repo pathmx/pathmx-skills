@@ -32,7 +32,7 @@ applicable points.
 | Author or revise PathMX content | Core and PathMX |
 | Review or diagnose PathMX content | Core and PathMX review |
 | Work on components, styling, or Play | Core, PathMX, and experience |
-| Author durable assessment questions | Core and PathMX |
+| Author durable assessment questions | Core, PathMX, and questions |
 | Start or resume a personal learning path | Core and personal path |
 | Sync these skills into a target repository | Core and distribution |
 
@@ -77,6 +77,16 @@ Any of these makes the result `Fails`:
 | Gives specific findings tied to files, output, or rendered behavior. | 0–2 |
 | Separates defects from optional improvements and states impact. | 0–2 |
 | Runs relevant read-only checks or explains why a check could not run. | 0–2 |
+
+## Questions
+
+| Criterion | Score |
+| --- | ---: |
+| Uses one stable `type: question` Block and one heading per response. | 0–2 |
+| Uses the correct built-in mapping and question type for the control. | 0–2 |
+| Keeps prompts and options readable as plain Markdown. | 0–2 |
+| Preserves learner-owned responses and does not prefill or auto-grade them. | 0–2 |
+| Verifies rendered controls and, when practical, submit and reload behavior. | 0–2 |
 
 ## Experience
 
