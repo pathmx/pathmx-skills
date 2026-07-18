@@ -32,6 +32,7 @@ applicable points.
 | Author or revise PathMX content | Core and PathMX |
 | Review or diagnose PathMX content | Core and PathMX review |
 | Work on components, styling, or Play | Core, PathMX, and experience |
+| Author durable assessment questions | Core and PathMX |
 | Start or resume a personal learning path | Core and personal path |
 | Sync these skills into a target repository | Core and distribution |
 
@@ -40,7 +41,7 @@ applicable points.
 Any of these makes the result `Fails`:
 
 - Invents PathMX syntax or uses syntax unsupported by the installed version.
-- Authors questions, actions, or spaceholders as supported features.
+- Authors general actions or spaceholders as supported features.
 - Writes diagnostic build output into a live `.pathmx` directory.
 - Claims a build or test passed without evidence.
 - Makes the repository depend on another checkout or named consumer.
@@ -95,7 +96,7 @@ Any of these makes the result `Fails`:
 | Reads the latest activity, assessment, and synthesis before resuming a path. | 0–2 |
 | Builds only the first or next lesson at the learner's proximal edge. | 0–2 |
 | Records an observable `start`, `destination`, practice, retrieval, and feedback. | 0–2 |
-| Uses a plain Markdown assessment and durable linked evidence. | 0–2 |
+| Uses a plain Markdown assessment and durable question responses, linked evidence, or both. | 0–2 |
 | Gates progress on evidence and remediates gaps before advancing. | 0–2 |
 | Records synthesis and logs explicit goal changes without rewriting history. | 0–2 |
 

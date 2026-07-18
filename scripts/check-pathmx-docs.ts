@@ -34,6 +34,7 @@ const referenceEntries = [
   "skills/pathmx/references/pathmx-markdown.md",
   "skills/pathmx/references/pathmx-player.md",
   "skills/pathmx/references/pathmx-directives.md",
+  "skills/pathmx/references/pathmx-questions.md",
   "skills/pathmx/references/pathmx-literate-components.md",
   "skills/pathmx/references/pathmx-code.md",
   "skills/pathmx/references/pathmx-math.md",
@@ -158,6 +159,31 @@ export async function checkPathmxDocs() {
     const config = await build(configRoot, path.join(tempRoot, "config"), [])
     requireEntries(config, ["index.path.md", "workshop.path.md"])
 
+    const questionsRoot = path.join(repoRoot, "tests", "fixtures", "pathmx", "questions")
+    const questions = await build(questionsRoot, path.join(tempRoot, "questions"), [
+      "index.quiz.md",
+    ])
+    requireEntries(questions, ["index.quiz.md"])
+    const questionsOutput = await outputForEntry(questions, "index.quiz.md")
+    const questionsHtml = await readFile(
+      path.join(questionsOutput, "index.quiz.html"),
+      "utf8",
+    )
+    for (const expected of [
+      'data-pathmx-action="questions.submitSingleChoice"',
+      'data-pathmx-action="questions.submitText"',
+      'data-pathmx-action="questions.submitFields"',
+      'name="question.source-of-truth"',
+      'name="question.define-beat"',
+      'name="question.explain-navigation"',
+      'name="question.study-plan.minutes"',
+      'name="question.study-plan.topic"',
+    ]) {
+      if (!questionsHtml.includes(expected)) {
+        throw new Error(`Question fixture missing rendered control: ${expected}`)
+      }
+    }
+
     const exampleRoot = path.join(
       repoRoot,
       "skills",
@@ -199,12 +225,14 @@ export async function checkPathmxDocs() {
         Object.keys(references.paths.paths).length +
         Object.keys(core.paths.paths).length +
         Object.keys(config.paths.paths).length +
+        Object.keys(questions.paths.paths).length +
         Object.keys(example.paths.paths).length +
         Object.keys(personalPath.paths.paths).length,
       sources: new Set([
         ...references.sourcePaths,
         ...core.sourcePaths,
         ...config.sourcePaths,
+        ...questions.sourcePaths,
         ...example.sourcePaths,
         ...personalPath.sourcePaths,
       ]).size,
