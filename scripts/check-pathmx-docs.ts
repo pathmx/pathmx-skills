@@ -30,6 +30,7 @@ const repoRoot = path.resolve(import.meta.dir, "..")
 const pathmxBin = path.join(repoRoot, "node_modules", ".bin", "pathmx")
 
 const referenceEntries = [
+  "evals/pathmx-skills.rubric.md",
   "skills/pathmx/references/pathmx-markdown.md",
   "skills/pathmx/references/pathmx-player.md",
   "skills/pathmx/references/pathmx-directives.md",

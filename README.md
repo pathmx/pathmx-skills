@@ -18,6 +18,11 @@ bun run check
 
 Examples and syntax claims must pass the local checks.
 
+## Evals
+
+Use [the agent rubric](./evals/pathmx-skills.rubric.md) to score task output and
+verification evidence.
+
 ## Sync
 
 Check a target without writing:
