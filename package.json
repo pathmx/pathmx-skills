@@ -2,7 +2,7 @@
   "name": "pathmx-skills",
   "private": true,
   "pathmxCompatibility": {
-    "baseline": "0.1.21",
+    "baseline": "0.1.25",
     "updatePolicy": "latest-after-verification"
   },
   "scripts": {
@@ -17,7 +17,7 @@
     "check": "bun run check:links && bun run check:skills && bun run check:self-contained && bun run check:pathmx && bun test && git diff --check HEAD"
   },
   "devDependencies": {
-    "@fellowhumans/pathmx": "0.1.21",
+    "@fellowhumans/pathmx": "0.1.25",
     "yaml": "2.9.0"
   }
 }

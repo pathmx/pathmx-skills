@@ -48,10 +48,11 @@ Apply the canonical packages:
 bun run sync-skills -- --write <target-repository>
 ```
 
-Write mode owns the packages declared in `skills/manifest.json`, names they
-explicitly replace, and their Claude discovery links. It removes the retired
-`/path` package while installing `/learn`, and leaves unrelated target content
-and skills alone.
+Write mode replaces `.agents/skills` with the complete canonical set declared
+in `skills/manifest.json` and replaces `.claude/skills` with its discovery
+link. It runs directly in the current checkout through a rollback-safe file
+transaction; it does not create or switch Git branches. Root `AGENTS.md`,
+`CLAUDE.md`, and all non-skill project content remain untouched.
 
 ## Evals
 

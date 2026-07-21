@@ -1,4 +1,5 @@
-import { cp, mkdir, readFile, writeFile } from "node:fs/promises"
+import { cp, mkdir, readFile, readdir, writeFile } from "node:fs/promises"
+import os from "node:os"
 import path from "node:path"
 
 import {
@@ -22,6 +23,7 @@ export type CodexOptions = {
   timeoutMs: number
   codexHome?: string
   sandbox?: "workspace-write" | "danger-full-access"
+  collaboration?: "auto" | "off" | "required"
 }
 
 export function subjectCodexArgs(
@@ -47,6 +49,7 @@ export function subjectCodexArgs(
     "--disable",
     "plugins",
   ]
+  if (options.collaboration === "off") global.push("--disable", "multi_agent")
   const exec = ["exec", "--ignore-user-config", "--ignore-rules", "--json", "-o", finalFile]
   if (threadId) exec.push("resume", threadId, prompt)
   else exec.push(prompt)
@@ -118,6 +121,141 @@ export function summarizeVisibleUpdates(
   }
 }
 
+export function summarizeCollaboration(
+  events: Array<Record<string, unknown>>,
+  stderr = "",
+) {
+  const calls = events.flatMap((event) => {
+    const item = event.item
+    if (!item || typeof item !== "object" || Array.isArray(item)) return []
+    const call = item as Record<string, unknown>
+    return call.type === "collab_tool_call" ? [call] : []
+  })
+  const spawnCalls = calls.filter(
+    (call) => typeof call.tool === "string" && /spawn/i.test(call.tool),
+  )
+  const workerThreadIds = new Set(
+    spawnCalls.flatMap((call) =>
+      Array.isArray(call.receiver_thread_ids)
+        ? call.receiver_thread_ids.filter(
+            (id): id is string => typeof id === "string" && Boolean(id),
+          )
+        : [],
+    ),
+  )
+  const errorLines = stderr
+    .split(/\r?\n/)
+    .filter((line) =>
+      /(?:collab|subagent).*(?:fail|error)|(?:fail|error).*(?:collab|subagent)/i.test(
+        line,
+      ),
+    )
+
+  return {
+    callCount: calls.length,
+    spawnCallCount: spawnCalls.length,
+    successfulSpawnCount: spawnCalls.filter(
+      (call) =>
+        call.status === "completed" &&
+        Array.isArray(call.receiver_thread_ids) &&
+        call.receiver_thread_ids.length > 0,
+    ).length,
+    workerCount: workerThreadIds.size,
+    waitCallCount: calls.filter((call) => call.tool === "wait").length,
+    errorLines,
+  }
+}
+
+async function findRollout(root: string, threadId: string): Promise<string | undefined> {
+  const entries = await readdir(root, { withFileTypes: true }).catch(() => [])
+  for (const entry of entries) {
+    const candidate = path.join(root, entry.name)
+    if (entry.isFile() && entry.name.includes(threadId) && entry.name.endsWith(".jsonl")) {
+      return candidate
+    }
+    if (entry.isDirectory()) {
+      const nested = await findRollout(candidate, threadId)
+      if (nested) return nested
+    }
+  }
+  return undefined
+}
+
+export async function summarizeStoredSubagents(
+  threadId: string | undefined,
+  codexHome?: string,
+) {
+  if (!threadId) {
+    return {
+      storeAvailable: false,
+      workerThreadIds: [] as string[],
+      workers: [] as Array<{ threadId: string; model?: string }>,
+      workerCount: 0,
+    }
+  }
+  const sessionsRoot = path.join(codexHome ?? path.join(os.homedir(), ".codex"), "sessions")
+  const rollout = await findRollout(sessionsRoot, threadId)
+  if (!rollout) {
+    return {
+      storeAvailable: false,
+      workerThreadIds: [] as string[],
+      workers: [] as Array<{ threadId: string; model?: string }>,
+      workerCount: 0,
+    }
+  }
+
+  const workerThreadIds = new Set<string>()
+  for (const line of (await readFile(rollout, "utf8")).split(/\r?\n/)) {
+    if (!line.trim()) continue
+    try {
+      const event = JSON.parse(line) as {
+        type?: string
+        payload?: {
+          type?: string
+          kind?: string
+          agent_thread_id?: string
+        }
+      }
+      if (
+        event.type === "event_msg" &&
+        event.payload?.type === "sub_agent_activity" &&
+        event.payload.kind === "started" &&
+        event.payload.agent_thread_id
+      ) {
+        workerThreadIds.add(event.payload.agent_thread_id)
+      }
+    } catch {}
+  }
+  const workers = await Promise.all(
+    [...workerThreadIds].map(async (workerThreadId) => {
+      const workerRollout = await findRollout(sessionsRoot, workerThreadId)
+      let model: string | undefined
+      if (workerRollout) {
+        for (const line of (await readFile(workerRollout, "utf8")).split(/\r?\n/)) {
+          if (!line.trim()) continue
+          try {
+            const event = JSON.parse(line) as {
+              type?: string
+              payload?: { model?: string }
+            }
+            if (event.type === "turn_context" && event.payload?.model) {
+              model = event.payload.model
+              break
+            }
+          } catch {}
+        }
+      }
+      return { threadId: workerThreadId, model }
+    }),
+  )
+  return {
+    storeAvailable: true,
+    workerThreadIds: [...workerThreadIds],
+    workers,
+    workerCount: workerThreadIds.size,
+  }
+}
+
 async function runCodexTurn(
   args: string[],
   cwd: string,
@@ -138,6 +276,11 @@ async function runCodexTurn(
     },
   })
   const visibleUpdates = summarizeVisibleUpdates(result.stdoutLineTimings, result.durationMs)
+  const parsed = parseCodexEvents(result.stdout)
+  const collaboration = {
+    ...summarizeCollaboration(parsed.events, result.stderr),
+    ...(await summarizeStoredSubagents(parsed.threadId, codexHome)),
+  }
   await writeFile(path.join(artifactDir, "events.jsonl"), result.stdout)
   await writeFile(path.join(artifactDir, "stderr.log"), result.stderr)
   await writeFile(
@@ -149,6 +292,7 @@ async function runCodexTurn(
         timedOut: result.timedOut,
         durationMs: result.durationMs,
         ...visibleUpdates,
+        collaboration,
       },
       null,
       2,
@@ -159,17 +303,21 @@ async function runCodexTurn(
       `Codex turn failed (${result.timedOut ? "timeout" : `exit ${result.exitCode}`}):\n${result.stderr.slice(-3000)}`,
     )
   }
-  const parsed = parseCodexEvents(result.stdout)
   if (parsed.invalid.length > 0) throw new Error(`Invalid Codex JSONL: ${parsed.invalid.join(", ")}`)
   await writeFile(
     path.join(artifactDir, "turn.json"),
     `${JSON.stringify(
-      { threadId: parsed.threadId, usage: parsed.usage, eventCount: parsed.events.length },
+      {
+        threadId: parsed.threadId,
+        usage: parsed.usage,
+        eventCount: parsed.events.length,
+        collaboration,
+      },
       null,
       2,
     )}\n`,
   )
-  return parsed
+  return { ...parsed, collaboration }
 }
 
 async function capturePhaseGrade(
@@ -231,6 +379,11 @@ export async function runSubject(
   await writeFile(path.join(runDir, "subject-prompt.md"), `${initialPrompt}\n`)
   const transcript: Array<{ id: string; phase: string; learner: string; agent: string }> = []
   const phaseContracts: PhaseContractResult[] = []
+  const collaborationTurns: Array<{
+    id: string
+    phase: string
+    collaboration: ReturnType<typeof summarizeCollaboration>
+  }> = []
   let threadId: string | undefined
   const initialDir = path.join(turnsRoot, "00-bootstrap")
   const initialFinal = path.join(initialDir, "final.md")
@@ -245,6 +398,11 @@ export async function runSubject(
   if (!threadId) throw new Error("Codex did not emit a thread.started event")
   const initialAgent = await readFile(initialFinal, "utf8").catch(() => "")
   transcript.push({ id: "bootstrap", phase: "bootstrap", learner: initialPrompt, agent: initialAgent })
+  collaborationTurns.push({
+    id: "bootstrap",
+    phase: "bootstrap",
+    collaboration: initial.collaboration,
+  })
   await captureWorkspace(
     path.join(subjectRoot, scenario.learner.learningSpace),
     path.join(initialDir, "snapshot"),
@@ -261,7 +419,7 @@ export async function runSubject(
       `${String(index + 1).padStart(2, "0")}-${turn.id}`,
     )
     const finalFile = path.join(turnDir, "final.md")
-    await runCodexTurn(
+    const result = await runCodexTurn(
       subjectCodexArgs(options, subjectRoot, finalFile, turn.message, threadId),
       subjectRoot,
       turnDir,
@@ -270,6 +428,11 @@ export async function runSubject(
     )
     const agent = await readFile(finalFile, "utf8").catch(() => "")
     transcript.push({ id: turn.id, phase: turn.phase, learner: turn.message, agent })
+    collaborationTurns.push({
+      id: turn.id,
+      phase: turn.phase,
+      collaboration: result.collaboration,
+    })
     await captureWorkspace(
       path.join(subjectRoot, scenario.learner.learningSpace),
       path.join(turnDir, "snapshot"),
@@ -322,6 +485,41 @@ export async function runSubject(
   await writeFile(
     path.join(runDir, "phase-contracts.json"),
     `${JSON.stringify(phaseContracts, null, 2)}\n`,
+  )
+  const workerThreadIds = [
+    ...new Set(
+      collaborationTurns.flatMap((turn) => turn.collaboration.workerThreadIds),
+    ),
+  ]
+  const workers = [
+    ...new Map(
+      collaborationTurns
+        .flatMap((turn) => turn.collaboration.workers)
+        .map((worker) => [worker.threadId, worker]),
+    ).values(),
+  ]
+  const collaboration = {
+    mode: options.collaboration ?? "auto",
+    turns: collaborationTurns,
+    totals: {
+      spawnCallCount: collaborationTurns.reduce(
+        (total, turn) => total + turn.collaboration.spawnCallCount,
+        0,
+      ),
+      successfulSpawnCount: workerThreadIds.length,
+      workerCount: workerThreadIds.length,
+      workerThreadIds,
+      workers,
+      workerModels: [...new Set(workers.flatMap((worker) => worker.model ?? []))],
+      errorCount: collaborationTurns.reduce(
+        (total, turn) => total + turn.collaboration.errorLines.length,
+        0,
+      ),
+    },
+  }
+  await writeFile(
+    path.join(runDir, "collaboration.json"),
+    `${JSON.stringify(collaboration, null, 2)}\n`,
   )
   return {
     threadId,

@@ -5,13 +5,13 @@
     "": {
       "name": "pathmx-skills",
       "devDependencies": {
-        "@fellowhumans/pathmx": "0.1.21",
+        "@fellowhumans/pathmx": "0.1.25",
         "yaml": "2.9.0",
       },
     },
   },
   "packages": {
-    "@fellowhumans/pathmx": ["@fellowhumans/pathmx@0.1.21", "", { "bin": { "pathmx": "dist/pathmx.js", "pmx": "dist/pathmx.js" } }, "sha512-xd8R1+bK5L1vZr+1wku29p8qS7iwpZD7J3+r6wuwmmv7f1EJEdHG8hu4R60yTikT0M7kzMC1T3qDs1DJubE6VA=="],
+    "@fellowhumans/pathmx": ["@fellowhumans/pathmx@0.1.25", "", { "bin": { "pathmx": "dist/pathmx.js", "pmx": "dist/pathmx.js" } }, "sha512-gmxzizQWL9re8hcpVzgGAoPcMERV+WUIT5KFWUVsAPsWtd0tt0El/aCkSIk82CbN4/RbArHiN1BkDEg70NdFkg=="],
 
     "yaml": ["yaml@2.9.0", "", { "bin": { "yaml": "bin.mjs" } }, "sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA=="],
   }

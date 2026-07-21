@@ -3,7 +3,13 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
 
-import { judgeCodexArgs, subjectCodexArgs, summarizeVisibleUpdates } from "./evals/codex"
+import {
+  judgeCodexArgs,
+  subjectCodexArgs,
+  summarizeCollaboration,
+  summarizeStoredSubagents,
+  summarizeVisibleUpdates,
+} from "./evals/codex"
 import { formatDuration, summarizeTimings } from "./evals/report"
 import {
   gradeLearningSpace,
@@ -86,6 +92,98 @@ describe("Codex event and command contract", () => {
     expect(args).toContain("resume")
     expect(args).toContain("thread-1")
     expect(args).not.toContain("--ephemeral")
+  })
+
+  it("can disable subagents for a paired control run", () => {
+    const args = subjectCodexArgs(
+      {
+        model: "floor-model",
+        reasoning: "low",
+        timeoutMs: 1,
+        collaboration: "off",
+      },
+      "/tmp/subject",
+      "/tmp/final.md",
+      "learner reply",
+    )
+    expect(args).toContain("multi_agent")
+    expect(args.filter((part) => part === "--disable").length).toBe(2)
+  })
+
+  it("summarizes successful and failed collaboration activity", () => {
+    const summary = summarizeCollaboration(
+      [
+        {
+          type: "item.completed",
+          item: {
+            type: "collab_tool_call",
+            tool: "spawn_agent",
+            status: "completed",
+            receiver_thread_ids: ["worker-1", "worker-2"],
+          },
+        },
+        {
+          type: "item.completed",
+          item: { type: "collab_tool_call", tool: "wait", status: "completed" },
+        },
+      ],
+      "collab followup failed: worker disappeared",
+    )
+    expect(summary).toMatchObject({
+      callCount: 2,
+      spawnCallCount: 1,
+      successfulSpawnCount: 1,
+      workerCount: 2,
+      waitCallCount: 1,
+    })
+    expect(summary.errorLines).toHaveLength(1)
+  })
+
+  it("finds real worker starts in the persisted Codex rollout", async () => {
+    const codexHome = await mkdtemp(path.join(os.tmpdir(), "pathmx-codex-home-"))
+    temporaryRoots.push(codexHome)
+    const sessionRoot = path.join(codexHome, "sessions", "2026", "07", "21")
+    await mkdir(sessionRoot, { recursive: true })
+    await writeFile(
+      path.join(sessionRoot, "rollout-parent-thread.jsonl"),
+      [
+        JSON.stringify({ type: "session_meta", payload: { id: "parent-thread" } }),
+        JSON.stringify({
+          type: "event_msg",
+          payload: {
+            type: "sub_agent_activity",
+            kind: "started",
+            agent_thread_id: "worker-1",
+          },
+        }),
+        JSON.stringify({
+          type: "event_msg",
+          payload: {
+            type: "sub_agent_activity",
+            kind: "started",
+            agent_thread_id: "worker-2",
+          },
+        }),
+      ].join("\n"),
+    )
+    for (const [threadId, model] of [
+      ["worker-1", "gpt-5.6-terra"],
+      ["worker-2", "gpt-5.6-terra"],
+    ]) {
+      await writeFile(
+        path.join(sessionRoot, `rollout-${threadId}.jsonl`),
+        JSON.stringify({ type: "turn_context", payload: { model } }),
+      )
+    }
+    expect(await summarizeStoredSubagents("parent-thread", codexHome)).toEqual({
+      storeAvailable: true,
+      workerThreadIds: ["worker-1", "worker-2"],
+      workers: [
+        { threadId: "worker-1", model: "gpt-5.6-terra" },
+        { threadId: "worker-2", model: "gpt-5.6-terra" },
+      ],
+      workerCount: 2,
+    })
   })
 
   it("keeps the judge read-only and permits an isolated artifact directory", () => {

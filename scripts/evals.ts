@@ -72,6 +72,7 @@ Run options:
   --artifacts <directory>    Artifact root outside the subject workspace
   --codex-home <directory>   Optional clean, already-authenticated CODEX_HOME
   --sandbox <mode>           workspace-write (default) or danger-full-access
+  --collaboration <mode>     auto (default), off, or required
   --timeout-minutes <n>      Per-turn timeout (default: 30)
 `
 }
@@ -164,6 +165,30 @@ async function gradeRun(runDir: string, withJudge: boolean, options: Options) {
       },
     ])
   }
+  const collaboration = JSON.parse(
+    await readFile(path.join(runDir, "collaboration.json"), "utf8").catch(() => "{}"),
+  ) as {
+    totals?: {
+      successfulSpawnCount?: number
+      workerCount?: number
+      errorCount?: number
+    }
+  }
+  if (metadata.collaborationMode === "required") {
+    const successfulSpawnCount = collaboration.totals?.successfulSpawnCount ?? 0
+    const errorCount = collaboration.totals?.errorCount ?? 0
+    deterministic = summarizeDeterministicChecks([
+      ...deterministic.checks,
+      {
+        id: "orchestration.subagents",
+        label: "The learning workflow used healthy direct subagents",
+        passed: successfulSpawnCount > 0 && errorCount === 0,
+        critical: true,
+        weight: 2,
+        evidence: `successful spawns=${successfulSpawnCount}; workers=${collaboration.totals?.workerCount ?? 0}; collaboration errors=${errorCount}`,
+      },
+    ])
+  }
   await writeFile(
     path.join(runDir, "deterministic.json"),
     `${JSON.stringify(deterministic, null, 2)}\n`,
@@ -239,6 +264,10 @@ async function main() {
   if (sandbox !== "workspace-write" && sandbox !== "danger-full-access") {
     throw new Error("--sandbox must be workspace-write or danger-full-access")
   }
+  const collaboration = String(options.collaboration ?? "auto")
+  if (!new Set(["auto", "off", "required"]).has(collaboration)) {
+    throw new Error("--collaboration must be auto, off, or required")
+  }
   const judgeProfileId = String(options["judge-profile"] ?? profiles.defaultJudge)
   const judgeProfile = findEvalProfile(profiles, judgeProfileId, "judge")
   const judgeModel = String(options["judge-model"] ?? judgeProfile.model)
@@ -268,6 +297,7 @@ async function main() {
       subjectModel: model,
       subjectReasoning: reasoning,
       subjectSandbox: sandbox,
+      collaborationMode: collaboration,
       codexVersion: codexVersion.stdout.trim(),
       pathmxCompatibility: packageJson.pathmxCompatibility,
       judgeRequested: options.judge === true,
@@ -293,6 +323,7 @@ async function main() {
       reasoning,
       timeoutMs,
       sandbox,
+      collaboration: collaboration as "auto" | "off" | "required",
       codexHome:
         typeof options["codex-home"] === "string"
           ? path.resolve(options["codex-home"])

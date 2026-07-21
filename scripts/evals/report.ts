@@ -107,6 +107,18 @@ export async function writeReport(
 ) {
   const judgeScore = judge ? scoreJudge(judge, rubric) : undefined
   const timing = await readTimingSummary(runDir)
+  const collaboration = JSON.parse(
+    await readFile(path.join(runDir, "collaboration.json"), "utf8").catch(() => "{}"),
+  ) as {
+    mode?: string
+    totals?: {
+      spawnCallCount?: number
+      successfulSpawnCount?: number
+      workerCount?: number
+      workerModels?: string[]
+      errorCount?: number
+    }
+  }
   let combined = deterministic.percentage
   if (judgeScore) combined = deterministic.percentage * 0.6 + judgeScore.percentage * 0.4
   if (!deterministic.criticalPassed) combined = Math.min(combined, 59)
@@ -116,6 +128,7 @@ export async function writeReport(
     scenario: { id: scenario.id, title: scenario.title, objective: scenario.objective },
     deterministic,
     timing,
+    collaboration,
     judge: judge ? { score: judgeScore, result: judge } : undefined,
     combined: {
       percentage: combined,
@@ -152,7 +165,21 @@ export async function writeReport(
   const timingMarkdown = timing.turns.length
     ? `\n## Learner wait-time signal\n\nThis signal is reported separately and does not change the quality score.\n\n- Status: **${timingSignal}**\n- Total model time: ${formatDuration(timing.totalDurationMs)}\n- Slowest turn: ${slowest?.turn ?? "none"} (${formatDuration(slowest?.durationMs ?? 0)})\n- Turns over five minutes: ${timing.turnsOverFiveMinutes}\n- Turns with a silent gap over one minute: ${timing.turnsWithSilentMinute}\n- Longest silent turn: ${timing.longestSilentTurn?.turn ?? "none"} (${formatDuration(timing.longestSilentTurn?.longestSilentGapMs ?? 0)})\n\n| Turn | Duration | First visible update | Longest silence | Updates | Timed out |\n| --- | --- | --- | --- | --- | --- |\n${timingRows}\n`
     : "\n## Learner wait-time signal\n\nNo turn timing artifacts were found.\n"
-  const markdown = `# Eval report: ${scenario.title}\n\nCombined score: **${combined}%**  \nCritical checks: **${deterministic.criticalPassed ? "pass" : "fail"}**\n\n## Deterministic checks\n\nScore: **${deterministic.percentage}%**\n\n| Result | Critical | Check | Evidence |\n| --- | --- | --- | --- |\n${checkRows}\n${timingMarkdown}${judgeRows}`
+  const collaborationMarkdown = `
+## Subagent orchestration signal
+
+- Mode: ${collaboration.mode ?? "unknown"}
+- Spawn calls observed: ${collaboration.totals?.spawnCallCount ?? 0}
+- Successful spawns: ${collaboration.totals?.successfulSpawnCount ?? 0}
+- Worker threads observed: ${collaboration.totals?.workerCount ?? 0}
+- Worker models: ${collaboration.totals?.workerModels?.join(", ") || "unknown"}
+- Collaboration errors: ${collaboration.totals?.errorCount ?? 0}
+
+This signal verifies whether the subject actually delegated work. Compare it
+with module-turn duration, first-update time, longest silence, and quality; a
+spawn count alone is not a speed win.
+`
+  const markdown = `# Eval report: ${scenario.title}\n\nCombined score: **${combined}%**  \nCritical checks: **${deterministic.criticalPassed ? "pass" : "fail"}**\n\n## Deterministic checks\n\nScore: **${deterministic.percentage}%**\n\n| Result | Critical | Check | Evidence |\n| --- | --- | --- | --- |\n${checkRows}\n${timingMarkdown}${collaborationMarkdown}${judgeRows}`
   await writeFile(path.join(runDir, "report.md"), markdown)
   return report
 }

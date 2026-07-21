@@ -5,8 +5,9 @@ The subject is a real resumable Codex CLI session. It sees only the bootstrap,
 the learner's messages, and the repository it creates. Deterministic checks and
 an optional independent judge score the result afterward.
 
-The latest checked development summary is
-[candidate-smoke-2026-07-21](./results/candidate-smoke-2026-07-21.md).
+The latest checked development summaries are the
+[candidate smoke](./results/candidate-smoke-2026-07-21.md) and the paired
+[subagent candidate](./results/subagent-candidate-2026-07-21.md).
 
 Run workspaces live outside this repository by default so the subject cannot
 read hidden scenarios or inherit this repository's `AGENTS.md`.
@@ -45,6 +46,21 @@ Use `--runs 3` to measure variance. Use `--artifacts <directory>` to retain
 runs in a chosen location. The default is the operating system's temporary
 directory under `pathmx-evals/`.
 
+To measure the learning skill's subagent lane, run the same scenario as a
+paired control and candidate:
+
+```sh
+bun run eval -- run sql-beginner --profile desktop-fast --collaboration off
+bun run eval -- run sql-beginner --profile desktop-fast --collaboration required
+```
+
+`required` adds a critical check that at least one direct worker was actually
+spawned without a collaboration error. `off` disables Codex's stable
+`multi_agent` feature for the control. Compare the module turn—not only the
+whole setup—across duration, first visible update, longest silence, structural
+quality, and judge score. Run each lane more than once before attributing a
+speed change to delegation rather than model variance.
+
 For release-gating runs, point `--codex-home` at a dedicated, already
 authenticated Codex home containing no personal skills or configuration. The
 runner also ignores config and rules and disables plugins. It does not copy or
@@ -60,6 +76,7 @@ Each run retains:
 - one JSONL event stream and final message per learner turn;
 - file inventories, Git state, and a structural grade captured after each turn;
 - deterministic checks and command output;
+- observed subagent spawn, worker, wait, and collaboration-error counts;
 - a structured judge result when requested;
 - `report.json` and a concise `report.md`.
 
