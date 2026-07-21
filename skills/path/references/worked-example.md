@@ -1,6 +1,11 @@
 # Worked Example
 
-This SQL path shows five files at one point in the learning loop.
+This SQL path is a compact slice: five durable files at one moment after a
+lesson. It does **not** include onboarding, plan confirm, short review,
+practice, remediation, or the no-core-miss assessment pattern.
+
+For the full onboard → confirm → review → assess → remediate fixture, see
+[adaptive-loop-example.md](./adaptive-loop-example.md).
 
 ## `paths/sql-foundations/path.outcome.md`
 

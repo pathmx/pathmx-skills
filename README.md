@@ -23,6 +23,11 @@ Examples and syntax claims must pass the local checks.
 Use [the agent rubric](./evals/pathmx-skills.rubric.md) to score task output and
 verification evidence.
 
+## Work log
+
+Design briefs that informed `/path` live under [work-log/](./work-log/). They
+are reference notes, not synced skill packages.
+
 ## Sync
 
 Check a target without writing:

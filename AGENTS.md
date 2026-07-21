@@ -4,6 +4,7 @@ This repository owns the canonical PathMX skills.
 
 - `pathmx` owns PathMX authoring and tooling.
 - `path` owns the personal learning workflow and uses `pathmx` for syntax.
+- `work-log/` holds design briefs for reference; it is not synced skill content.
 - Keep all checked-in content self-contained. Do not depend on another checkout.
 - Keep prose short and plain.
 - Add only syntax supported by the pinned PathMX version and a local fixture.

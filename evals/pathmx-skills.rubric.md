@@ -102,12 +102,12 @@ Any of these makes the result `Fails`:
 | Criterion | Score |
 | --- | ---: |
 | Uses one learner, one goal, and learner-confirmed context. | 0–2 |
-| Establishes Point A, Point B, and a small evidence rubric for a new path. | 0–2 |
+| Collects Point A evidence, then establishes Point A, Point B, rubric, and a confirmed plan before teaching. | 0–2 |
 | Reads the latest activity, assessment, and synthesis before resuming a path. | 0–2 |
-| Builds only the first or next lesson at the learner's proximal edge. | 0–2 |
-| Records an observable `start`, `destination`, practice, retrieval, and feedback. | 0–2 |
-| Uses a plain Markdown assessment and durable question responses, linked evidence, or both. | 0–2 |
-| Gates progress on evidence and remediates gaps before advancing. | 0–2 |
+| Builds only the first or next lesson at the learner's proximal edge, one Block per turn. | 0–2 |
+| Records an observable `start`, `destination`, review, practice, retrieval, and feedback. | 0–2 |
+| Uses a plain Markdown assessment with core/peripheral tags and durable question responses, linked evidence, or both. | 0–2 |
+| Gates progress on no-core-miss evidence; retries variants, remediates after repeated fails, and renegotiates after failed remediation. | 0–2 |
 | Records synthesis and logs explicit goal changes without rewriting history. | 0–2 |
 
 ## Distribution

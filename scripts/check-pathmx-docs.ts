@@ -220,6 +220,57 @@ export async function checkPathmxDocs() {
       }
     }
 
+    const adaptivePath = await build(pathRoot, path.join(tempRoot, "path-adaptive"), [
+      "paths/chess-opening-principles/index.path.md",
+    ])
+    requireEntries(adaptivePath, ["chess-opening-principles/index.path.md"])
+    const expectedAdaptiveSources = [
+      "chess-opening-principles/index.path.md",
+      "chess-opening-principles/path.outcome.md",
+      "chess-opening-principles/onboarding/index.lesson.md",
+      "chess-opening-principles/onboarding/point-a-evidence.md",
+      "chess-opening-principles/onboarding/confirm-plan.md",
+      "chess-opening-principles/lessons/control-center-development/index.lesson.md",
+      "chess-opening-principles/lessons/control-center-development/lesson.review.md",
+      "chess-opening-principles/lessons/control-center-development/lesson.practice.md",
+      "chess-opening-principles/lessons/control-center-development/lesson.assessment.md",
+      "chess-opening-principles/lessons/develop-before-queen/index.lesson.md",
+      "chess-opening-principles/lessons/reteach-opening-principles/index.lesson.md",
+      "chess-opening-principles/references/index.references.md",
+      "learner.profile.md",
+      "learning.activity.md",
+      "assets/learning.components.md",
+    ]
+    for (const source of expectedAdaptiveSources) {
+      if (!adaptivePath.sourcePaths.has(source)) {
+        throw new Error(`Adaptive path fixture missing ${source}`)
+      }
+    }
+    const adaptiveOutput = await outputForEntry(
+      adaptivePath,
+      "chess-opening-principles/index.path.md",
+    )
+    const adaptiveAssessmentHtml = await readFile(
+      path.join(
+        adaptiveOutput,
+        "chess-opening-principles",
+        "lessons",
+        "control-center-development",
+        "lesson.assessment.html",
+      ),
+      "utf8",
+    )
+    for (const expected of [
+      'data-pathmx-action="questions.submitSingleChoice"',
+      'data-pathmx-action="questions.submitText"',
+      'name="question.mc-center"',
+      'name="question.short-justify"',
+    ]) {
+      if (!adaptiveAssessmentHtml.includes(expected)) {
+        throw new Error(`Adaptive assessment missing rendered control: ${expected}`)
+      }
+    }
+
     return {
       paths:
         Object.keys(references.paths.paths).length +
@@ -227,7 +278,8 @@ export async function checkPathmxDocs() {
         Object.keys(config.paths.paths).length +
         Object.keys(questions.paths.paths).length +
         Object.keys(example.paths.paths).length +
-        Object.keys(personalPath.paths.paths).length,
+        Object.keys(personalPath.paths.paths).length +
+        Object.keys(adaptivePath.paths.paths).length,
       sources: new Set([
         ...references.sourcePaths,
         ...core.sourcePaths,
@@ -235,6 +287,7 @@ export async function checkPathmxDocs() {
         ...questions.sourcePaths,
         ...example.sourcePaths,
         ...personalPath.sourcePaths,
+        ...adaptivePath.sourcePaths,
       ]).size,
     }
   } finally {
