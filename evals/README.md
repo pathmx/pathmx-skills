@@ -5,8 +5,9 @@ The subject is a real resumable Codex CLI session. It sees only the bootstrap,
 the learner's messages, and the repository it creates. Deterministic checks and
 an optional independent judge score the result afterward.
 
-The latest checked development summaries are the
-[candidate smoke](./results/candidate-smoke-2026-07-21.md) and the paired
+The latest checked summaries are the
+[hosted PathMX 0.1.25 release smoke](./results/release-smoke-0.1.25-2026-07-21.md),
+the [candidate smoke](./results/candidate-smoke-2026-07-21.md), and the paired
 [subagent candidate](./results/subagent-candidate-2026-07-21.md).
 
 Run workspaces live outside this repository by default so the subject cannot
