@@ -10,31 +10,32 @@ installed PathMX version.
 
 ## Workflow
 
-1. Read the nearest repository instructions.
-2. Inspect local config, package scripts, PathMX version, entry Source, and
+1. If no learning repository location is currently set, ask the user for a location (and suggest one that makes sense for them).
+2. Read the nearest repository instructions.
+3. Inspect local config, package scripts, PathMX version, entry Source, and
    nearby examples.
-3. Identify the Source role and audience.
-4. Draft ordinary Markdown first.
-5. Use `---` Blocks and Beats only when they improve pacing or focus.
-6. Reuse local links, directives, components, and styles. Do not invent syntax.
-7. Build into scratch output and report the result.
+4. Identify the Source role and audience.
+5. Draft ordinary Markdown first.
+6. Use `---` Blocks and Beats only when they improve pacing or focus.
+7. Reuse local links, directives, components, and styles. Do not invent syntax.
+8. Build into scratch output and report the result.
 
 Repository instructions and pinned versions override these examples.
 
 ## Terms
 
-| Term | Meaning |
-| --- | --- |
-| Source | One Markdown file. |
-| Block | One coherent unit separated by `---`. |
-| Beat | One focusable item inside a Block. |
-| Frontmatter | Source-level YAML at the top of a file. |
-| Topmatter | Block data in an HTML comment after a divider. |
-| Type hint | The filename suffix before `.md`, such as `.lesson.md`. |
-| Root Source | An entry Source for one built graph. |
-| Play | Guided traversal of Blocks and Beats. |
-| Directive | An implemented `@`-labeled Markdown link or definition. |
-| Literate Component | A custom tag defined in a component Markdown file. |
+| Term               | Meaning                                                 |
+| ------------------ | ------------------------------------------------------- |
+| Source             | One Markdown file.                                      |
+| Block              | One coherent unit separated by `---`.                   |
+| Beat               | One focusable item inside a Block.                      |
+| Frontmatter        | Source-level YAML at the top of a file.                 |
+| Topmatter          | Block data in an HTML comment after a divider.          |
+| Type hint          | The filename suffix before `.md`, such as `.lesson.md`. |
+| Root Source        | An entry Source for one built graph.                    |
+| Play               | Guided traversal of Blocks and Beats.                   |
+| Directive          | An implemented `@`-labeled Markdown link or definition. |
+| Literate Component | A custom tag defined in a component Markdown file.      |
 
 ## References
 
