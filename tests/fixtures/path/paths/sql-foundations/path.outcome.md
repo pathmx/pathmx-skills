@@ -13,8 +13,11 @@ Can filter one table. Joins are unfamiliar.
 
 Can combine two tables and explain which rows remain.
 
-## Rubric
+## Milestone evidence
 
-- Chooses the right join.
-- Writes the join condition.
-- Explains unmatched rows.
+| Milestone | Evidence | Status |
+| --- | --- | --- |
+| Choose rows from one table | Existing filter query | demonstrated |
+| Combine related tables | Query plus row-survival explanation | ready |
+| Summarize joined results | Grouped support totals | planned |
+| Build the support report | Complete report and explanation | planned |

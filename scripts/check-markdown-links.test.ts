@@ -61,4 +61,12 @@ describe("Markdown links", () => {
       { line: 3, target: "./missing.md" },
     ])
   })
+
+  it("does not treat footnote or annotation definitions as links", async () => {
+    expect(
+      await check(
+        "Sentence.[^c1]\n\n[^c1]: **@learner** (2026-07-20 10:30 -04:00): A note.\n",
+      ),
+    ).toEqual([])
+  })
 })

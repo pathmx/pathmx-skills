@@ -1,0 +1,50 @@
+schema: pathmx-eval/scenario
+version: 1
+id: return-with-confusion
+title: Return with confusion at a module boundary
+objective: Verify evidence-based adaptation without tightening the loop around every activity.
+tags: [return, annotations, checkpoint, adaptation]
+bootstrap:
+  source: local
+learner:
+  learningSpace: learning-space
+  initialMessage: >-
+    Follow the bootstrap instructions and create ./learning-space. I want a
+    beginner SQL path for exploring customer data. I can study for 25 minutes
+    twice a week. Use a quiet light theme and prepare the first module.
+  hiddenNotes: >-
+    The learner later reports a specific misconception. The agent should preserve
+    completed work, record the evidence, and adapt at the checkpoint rather than
+    rewriting history or blocking ordinary session flow.
+turns:
+  - id: baseline
+    phase: map
+    message: >-
+      I understand rows and columns but have never written SQL. I like worked
+      examples followed by a similar attempt. Please show me the milestone map
+      before teaching.
+    expect:
+      passed: [path.milestones]
+      notPassed: [module.buffered]
+  - id: confirm-map
+    phase: module
+    message: >-
+      I confirm the map. Prepare the first complete module with worked examples,
+      similar attempts, and immediate help, then give me the exact starting link.
+    expect:
+      passed: [module.buffered, session.immediate-support, player.exact-route]
+  - id: simulated-completion
+    phase: checkpoint
+    message: >-
+      Assume I completed the first module. My exercises show I can select columns
+      and filter simple values, but I keep putting aggregate conditions in WHERE
+      and cannot explain when HAVING is needed. Record this as checkpoint evidence.
+      I also left an annotation saying the first explanation was too abstract.
+  - id: adapt
+    phase: adaptation
+    message: >-
+      Update my current position and prepare the next useful module. Preserve the
+      completed module and annotation. Do not make me repeat work I demonstrated.
+      Give me the exact next Player location when it is ready.
+    expect:
+      passed: [module.buffered, session.immediate-support, player.exact-route]

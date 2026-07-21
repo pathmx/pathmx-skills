@@ -5,14 +5,26 @@ status: active
 
 # SQL Foundations
 
-[Outcome](./path.outcome.md)
+**Point A:** Can filter one table. Joins are unfamiliar.
+
+**Point B:** Can build and explain a small support report across related tables.
+
+[Outcome and evidence targets](./path.outcome.md)
 
 ---
 
-## Current lesson
+## Milestone map
 
-- [Joining tables](./lessons/joins/index.lesson.md)
+- **Choose rows from one table:** demonstrated
+- **Combine related tables:** ready
+- **Summarize joined results:** planned
+- **Build the support report:** planned
 
-## Activity
+## Current module
 
-- [Learning record](../learning.activity.md)
+- [Combine related tables](./modules/01-combine-tables/index.path.md)
+
+## Learning record
+
+- [Learner profile](../learner.profile.md)
+- [Learning activity](../learning.activity.md)

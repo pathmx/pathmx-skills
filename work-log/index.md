@@ -7,7 +7,6 @@ PathMX Sources and not part of the synced skill packages. The skill contract is
 ## Entries
 
 - [Adaptive Point A → Point B Learning Loop](./2026-07-20-adaptive-learning-loop.brief.md)
-  — fixture:
-  [Chess Opening Principles](../tests/fixtures/path/paths/chess-opening-principles/index.path.md);
-  skill summary:
-  [adaptive-loop-example.md](../skills/path/references/adaptive-loop-example.md)
+  — the superseded first design. Its testing led to the current
+  [buffered loop](../skills/path/references/buffered-loop.md) and compact
+  [SQL fixture](../tests/fixtures/path/paths/sql-foundations/index.path.md).

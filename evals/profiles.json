@@ -1,0 +1,40 @@
+{
+  "schema": "pathmx-eval/profiles",
+  "version": 1,
+  "defaultSubject": "desktop-power",
+  "defaultJudge": "judge-quality",
+  "profiles": [
+    {
+      "id": "desktop-power",
+      "role": "subject",
+      "model": "gpt-5.6-sol",
+      "reasoning": "medium",
+      "description": "Codex Desktop's documented default Power setting.",
+      "evidence": "https://learn.chatgpt.com/docs/models",
+      "verifiedOn": "2026-07-20"
+    },
+    {
+      "id": "desktop-fast",
+      "role": "subject",
+      "model": "gpt-5.6-sol",
+      "reasoning": "low",
+      "description": "CLI approximation of moving Desktop Power toward Faster: the same Sol model with lighter reasoning.",
+      "evidence": "https://learn.chatgpt.com/docs/models",
+      "verifiedOn": "2026-07-20"
+    },
+    {
+      "id": "instruction-floor",
+      "role": "subject",
+      "model": "gpt-5.4-mini",
+      "reasoning": "low",
+      "description": "A deliberately weaker, lower-reasoning lane for instruction robustness."
+    },
+    {
+      "id": "judge-quality",
+      "role": "judge",
+      "model": "gpt-5.6-sol",
+      "reasoning": "high",
+      "description": "A stronger independent judge for evidence-backed qualitative scoring."
+    }
+  ]
+}

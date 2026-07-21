@@ -61,7 +61,6 @@ async function listRepositoryFiles(repoRoot: string) {
     .split(/\r?\n/)
     .filter(Boolean)
     .filter((file) => existsSync(path.join(repoRoot, file)))
-    .filter((file) => !file.startsWith("plans/"))
     .filter((file) => file !== "scripts/check-self-contained.test.ts")
     .sort()
 }

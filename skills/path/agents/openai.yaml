@@ -1,6 +1,4 @@
 interface:
   display_name: "Personal Learning Path"
-  short_description: "Build one adaptive learning path"
-  default_prompt: "Use $path to create a learning path for my stated goal."
-policy:
-  allow_implicit_invocation: false
+  short_description: "Build buffered adaptive learning paths"
+  default_prompt: "Use $path to help me start or continue learning in my personal PathMX space."

@@ -1,0 +1,54 @@
+{
+  "schema": "pathmx-eval/rubric",
+  "version": 1,
+  "criteria": [
+    {
+      "id": "onboarding.clarity",
+      "phase": "onboarding",
+      "weight": 2,
+      "description": "Questions are brief, plain, and collect Point B, Point A evidence, rhythm, learning preferences, and relevant access needs without unnecessary personal data."
+    },
+    {
+      "id": "map.achievable-progress",
+      "phase": "map",
+      "weight": 3,
+      "description": "The learner gets a comprehensible 3–7 milestone capability map with evidence targets, statuses, and one foreground path."
+    },
+    {
+      "id": "module.coherence",
+      "phase": "module",
+      "weight": 3,
+      "description": "The current module is a coherent runway of 2–4 complete sessions; later work remains provisional."
+    },
+    {
+      "id": "session.immediate-support",
+      "phase": "session",
+      "weight": 3,
+      "description": "Sessions have a finishable arc and embed hints, examples, rationale or rubrics, smaller options, and optional stretch work so ordinary progress does not wait for the agent."
+    },
+    {
+      "id": "presentation.personal-readable",
+      "phase": "module",
+      "weight": 1,
+      "description": "Confirmed style choices shape a restrained, attractive, readable presentation without destabilizing navigation."
+    },
+    {
+      "id": "checkpoint.evidence",
+      "phase": "checkpoint",
+      "weight": 2,
+      "description": "Before learner submission, the checkpoint requests observable evidence, gives success criteria, and makes no unsupported progress claim. When the scenario includes submitted checkpoint evidence, the resulting decision uses that evidence and makes the next state understandable. Do not deduct merely because a pre-checkpoint scenario ends before the learner completes it."
+    },
+    {
+      "id": "adaptation.proportional",
+      "phase": "adaptation",
+      "weight": 2,
+      "description": "The agent adapts at a useful boundary, preserves history and annotations, and avoids unnecessary remediation loops."
+    },
+    {
+      "id": "handoff.next-action",
+      "phase": "return",
+      "weight": 2,
+      "description": "The learner is given the narrowest useful Player route and knows exactly what to do next and how to use Play mode."
+    }
+  ]
+}

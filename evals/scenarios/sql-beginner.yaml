@@ -1,0 +1,41 @@
+schema: pathmx-eval/scenario
+version: 1
+id: sql-beginner
+title: SQL beginner with a concrete work goal
+objective: Bootstrap a personal learning space and prepare a coherent first SQL module.
+tags: [bootstrap, technical, beginner, buffered-module]
+bootstrap:
+  source: local
+learner:
+  learningSpace: learning-space
+  initialMessage: >-
+    Please follow the bootstrap instructions and carry them out. Create the new
+    repository at ./learning-space. I want to learn enough SQL to answer useful
+    questions from customer data at work. I am not very technical.
+  hiddenNotes: >-
+    The learner can read a spreadsheet and recognize rows and columns but has
+    never written a query. Favor visible, low-jargon progress and concrete
+    evidence over database theory.
+turns:
+  - id: preferences
+    phase: onboarding
+    message: >-
+      I can usually do 25 minutes three evenings a week. I learn best from one
+      worked example and then trying something similar. Keep it calm, practical,
+      light, and blue-green. Larger text is helpful and I dislike motion.
+  - id: point-a
+    phase: map
+    message: >-
+      For current evidence: I understand that a customer table has one row per
+      customer and columns like name or signup date, but I do not know how to ask
+      the database a question. Please show me the proposed map before teaching.
+    expect:
+      passed: [path.milestones]
+      notPassed: [module.buffered]
+  - id: confirm-map
+    phase: module
+    message: >-
+      The map makes sense. Confirm it and fully prepare the first module so I can
+      work through all of its sessions without waiting for another agent turn.
+    expect:
+      passed: [module.buffered, session.immediate-support, player.exact-route]
