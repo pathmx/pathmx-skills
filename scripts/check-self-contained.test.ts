@@ -19,7 +19,7 @@ describe("self-containment checks", () => {
   it("allows internal parent links", () => {
     expect(
       inspectSelfContainedText(
-        "skills/path/references/example.md",
+        "skills/learn/references/example.md",
         "[Skill](../SKILL.md)",
         root,
       ),

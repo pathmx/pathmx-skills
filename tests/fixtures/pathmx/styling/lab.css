@@ -1,0 +1,11 @@
+@scope (.pmx-document.technical-lab) {
+  :scope {
+    --fixture-lab-theme: active;
+    font-family: ui-monospace, monospace;
+  }
+
+  .pmx-block.callout {
+    border-inline-start: 0.25em solid var(--pmx-color-accent);
+    padding-inline-start: 1em;
+  }
+}

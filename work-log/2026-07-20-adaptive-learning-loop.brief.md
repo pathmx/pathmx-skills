@@ -3,11 +3,11 @@ status: superseded
 date: 2026-07-20
 related:
   - https://build-week.pathmx.net/work-log/2026-07-18-player-native-learning-reshape.brief
-  - ../skills/path/SKILL.md
-  - ../skills/path/references/buffered-loop.md
-  - ../tests/fixtures/path/paths/learner.profile.md
-  - ../tests/fixtures/path/paths/learning.activity.md
-  - ../tests/fixtures/path/paths/sql-foundations/index.path.md
+  - ../skills/learn/SKILL.md
+  - ../skills/learn/references/buffered-loop.md
+  - ../skills/pathmx/library/examples/learn-sql-foundations/paths/learner.profile.md
+  - ../skills/pathmx/library/examples/learn-sql-foundations/paths/learning.activity.md
+  - ../skills/pathmx/library/examples/learn-sql-foundations/paths/sql-foundations/index.path.md
 ---
 
 # Adaptive Point A → Point B Learning Loop
@@ -17,15 +17,15 @@ Extends the
 confirm a plan, teach in small stages, review after each lesson, assess before
 the next, then update the roadmap from evidence.
 
-Kept here as the first design brief behind `/path` and as a record of Tram Le
+Kept here as the first design brief behind `/learn` and as a record of Tram Le
 and Mark Johnson's early testing. That testing exposed the waiting and weak
 progress structure in the one-Block-at-a-time loop described below. The current
-contract is the [buffered loop](../skills/path/references/buffered-loop.md), with
-a compact [SQL fixture](../tests/fixtures/path/paths/sql-foundations/index.path.md).
+contract is the [buffered loop](../skills/learn/references/buffered-loop.md), with
+a compact [SQL library example](../skills/pathmx/library/examples/learn-sql-foundations/paths/sql-foundations/index.path.md).
 
 | | |
 | --- | --- |
-| Canonical skill | `/path` in this repository |
+| Canonical skill | `/learn` in this repository |
 | Product target | `pathmx-learning-starter` |
 | Demo topic | chess opening principles |
 | Memory | durable Sources under `paths/`, not chat |
@@ -282,7 +282,8 @@ paths/
 ```
 
 The retired Chess prototype remains recoverable from Git history. The current
-playable fixture lives under `tests/fixtures/path/paths/sql-foundations/`.
+playable example lives under
+`skills/pathmx/library/examples/learn-sql-foundations/paths/sql-foundations/`.
 Workflow briefs live in `work-log/`, not in synced learner Sources.
 
 ---

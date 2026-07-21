@@ -562,13 +562,13 @@ export async function gradeLearningSpace(
     { critical: true, weight: 2 },
   )
 
-  const skills = ["path", "pathmx"].filter((name) =>
+  const skills = ["learn", "pathmx"].filter((name) =>
     existsSync(path.join(workspace, ".agents", "skills", name, "SKILL.md")),
   )
   addCheck(
     checks,
     "skills.installed",
-    "Path and PathMX skills installed",
+    "Learn and PathMX skills installed",
     skills.length === 2,
     skills.join(", ") || "none",
     { critical: true, weight: 3 },

@@ -18,6 +18,7 @@ type SkillManifest = {
     invocation: "automatic-and-explicit" | "explicit"
     purpose: string
     dependsOn: string[]
+    replaces?: string[]
   }>
 }
 
@@ -118,10 +119,20 @@ export async function validateSkillPackages(repoRoot: string) {
         findings.push({ file: "skills/manifest.json", message: "unsupported schema or version" })
       }
       const manifestNames = manifest.skills.map((skill) => skill.name).sort()
+      const replacedNames = manifest.skills.flatMap((skill) => skill.replaces ?? [])
       if (JSON.stringify(manifestNames) !== JSON.stringify(names)) {
         findings.push({
           file: "skills/manifest.json",
           message: `manifest skills (${manifestNames.join(", ")}) must match directories (${names.join(", ")})`,
+        })
+      }
+      if (
+        new Set(replacedNames).size !== replacedNames.length ||
+        replacedNames.some((name) => manifestNames.includes(name))
+      ) {
+        findings.push({
+          file: "skills/manifest.json",
+          message: "replaced skill names must be unique and retired",
         })
       }
       for (const skill of manifest.skills) {
@@ -135,6 +146,12 @@ export async function validateSkillPackages(repoRoot: string) {
           findings.push({
             file: "skills/manifest.json",
             message: `invalid metadata for ${skill.name}`,
+          })
+        }
+        if (skill.replaces && !Array.isArray(skill.replaces)) {
+          findings.push({
+            file: "skills/manifest.json",
+            message: `invalid replacements for ${skill.name}`,
           })
         }
         for (const dependency of skill.dependsOn) {

@@ -24,10 +24,10 @@ async function check(markdown: string) {
 }
 
 describe("Markdown links", () => {
-  it("accepts valid files, directories, anchors, and query strings", async () => {
+  it("accepts valid files, directories, anchors, nested labels, and query strings", async () => {
     expect(
       await check(
-        "[file](./docs/target.md) [dir](./docs) [anchor](./docs/target.md?view=1#target-heading)\n",
+        "[:lucide-arrow-right[Next]:](./docs/target.md) [file](./docs/target.md) [dir](./docs) [anchor](./docs/target.md?view=1#target-heading)\n",
       ),
     ).toEqual([])
   })

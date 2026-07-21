@@ -55,7 +55,9 @@ function maskIgnoredMarkdown(markdown: string) {
 export function extractMarkdownLinks(markdown: string): MarkdownLink[] {
   const links: MarkdownLink[] = []
   for (const [index, line] of maskIgnoredMarkdown(markdown).entries()) {
-    for (const match of line.matchAll(/!?\[[^\]]*\]\((<[^>]+>|[^)]+)\)/g)) {
+    for (const match of line.matchAll(
+      /!?\[(?:[^\[\]]|\[[^\[\]]*\])*\]\((<[^>]+>|[^)]+)\)/g,
+    )) {
       let target = match[1]?.trim() ?? ""
       if (target.startsWith("<") && target.endsWith(">")) {
         target = target.slice(1, -1)
@@ -65,7 +67,9 @@ export function extractMarkdownLinks(markdown: string): MarkdownLink[] {
       if (target) links.push({ line: index + 1, target })
     }
 
-    const definition = line.match(/^\s*\[(?!\^)[^\]]+\]:\s*(<[^>]+>|\S+)/)
+    const definition = line.match(
+      /^\s*\[(?!\^)[^\]]+\]:\s*(?!\]\()(<[^>]+>|\S+)/,
+    )
     if (definition?.[1]) {
       links.push({
         line: index + 1,

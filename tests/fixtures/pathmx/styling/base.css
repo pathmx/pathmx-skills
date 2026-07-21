@@ -1,0 +1,9 @@
+@scope (.pmx-document) {
+  :scope {
+    --fixture-base-theme: active;
+  }
+
+  :where(code, th) {
+    font-family: ui-monospace, monospace;
+  }
+}

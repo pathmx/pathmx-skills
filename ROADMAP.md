@@ -28,11 +28,13 @@
 
 ## Later work
 
-- Forward-test bootstrap and both implicit skill triggers in clean Codex and
+- Forward-test bootstrap and all implicit skill triggers in clean Codex and
   Claude Code sessions.
+- Refine `/teach` against representative deployed PathMX paths before treating
+  its distribution, facilitation, and release conventions as settled.
 - Expand stable annotation review and reply workflows after field use.
-- Add more learning-path examples only when they cover a distinct domain or
-  learner need.
+- Add library examples only when they cover a distinct audience, domain,
+  authoring pattern, or learner need.
 - Explore an optional, more playful home and milestone map without making it a
   dependency of the minimal starter.
 - Add general actions or spaceholders only after their public authoring
