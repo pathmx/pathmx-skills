@@ -37,6 +37,7 @@ export type TargetLayout = {
   claudeSkills: string
   claudeMode: "root-link" | "per-skill-links"
   skills: string[]
+  retiredSkills: string[]
 }
 
 export type SyncHooks = {
@@ -80,6 +81,25 @@ export async function discoverSkills(
     )
   }
   return names
+}
+
+async function discoverRetiredSkills(declaredManifest = manifestPath) {
+  const manifest = JSON.parse(await readFile(declaredManifest, "utf8")) as {
+    skills?: Array<{ name?: string; replaces?: string[] }>
+  }
+  const current = new Set(
+    (manifest.skills ?? [])
+      .map((skill) => skill.name)
+      .filter((name): name is string => typeof name === "string"),
+  )
+  const retired = (manifest.skills ?? []).flatMap((skill) => skill.replaces ?? [])
+  if (retired.some((name) => current.has(name))) {
+    throw new Error("Replaced skill names must not match current packages")
+  }
+  if (new Set(retired).size !== retired.length) {
+    throw new Error("Replaced skill names must be unique")
+  }
+  return retired.sort()
 }
 
 export async function listFiles(root: string): Promise<FileEntry[]> {
@@ -183,6 +203,7 @@ export async function inspectTarget(
   }
 
   const skills = await discoverSkills(canonicalSkills, canonicalManifest)
+  const retiredSkills = await discoverRetiredSkills(canonicalManifest)
   const agentDir = path.join(root, ".agents")
   const agentSkillsDir = path.join(agentDir, "skills")
   const claudeDir = path.join(root, ".claude")
@@ -201,7 +222,7 @@ export async function inspectTarget(
       throw new Error(`.claude/skills must be a directory or symlink: ${claudeSkills}`)
     }
     claudeMode = "per-skill-links"
-    for (const name of skills) {
+    for (const name of [...skills, ...retiredSkills]) {
       const link = path.join(claudeSkills, name)
       assertInside(root, link)
       const linkStats = await stats(link)
@@ -211,7 +232,7 @@ export async function inspectTarget(
     }
   }
 
-  for (const name of skills) {
+  for (const name of [...skills, ...retiredSkills]) {
     assertInside(root, path.join(agentSkillsDir, name))
   }
 
@@ -223,6 +244,7 @@ export async function inspectTarget(
     claudeSkills,
     claudeMode,
     skills,
+    retiredSkills,
   }
 }
 
@@ -236,6 +258,11 @@ export async function inspectDrift(layout: TargetLayout, canonicalSkills = skill
         name,
       )),
     )
+  }
+  for (const name of layout.retiredSkills) {
+    if (await stats(path.join(layout.agentSkillsDir, name))) {
+      drift.push({ kind: "extra", path: `${name} (retired)` })
+    }
   }
 
   const linkDrift: string[] = []
@@ -253,6 +280,14 @@ export async function inspectDrift(layout: TargetLayout, canonicalSkills = skill
         const current = await stats(link)
         const value = current?.isSymbolicLink() ? await readlink(link) : "missing"
         linkDrift.push(`link    .claude/skills/${name} -> ${value}`)
+      }
+    }
+    for (const name of layout.retiredSkills) {
+      const link = path.join(layout.claudeSkills, name)
+      const current = await stats(link)
+      if (current) {
+        const value = current.isSymbolicLink() ? await readlink(link) : "conflict"
+        linkDrift.push(`extra   .claude/skills/${name} -> ${value}`)
       }
     }
   }
@@ -353,7 +388,7 @@ export async function writeSkills(
     }
     await hooks.afterStage?.()
 
-    for (const name of layout.skills) {
+    for (const name of [...layout.skills, ...layout.retiredSkills]) {
       const destination = path.join(layout.agentSkillsDir, name)
       if (await stats(destination)) {
         await rename(destination, path.join(skillBackupRoot, name))
@@ -393,6 +428,9 @@ export async function writeSkills(
           link,
         )
         createdLinks.push(link)
+      }
+      for (const name of layout.retiredSkills) {
+        await backupLink(path.join(layout.claudeSkills, name), `retired-${name}`)
       }
     }
 

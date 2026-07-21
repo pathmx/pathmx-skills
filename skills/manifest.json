@@ -10,10 +10,18 @@
       "dependsOn": []
     },
     {
-      "name": "path",
-      "directory": "skills/path",
+      "name": "learn",
+      "directory": "skills/learn",
       "invocation": "automatic-and-explicit",
       "purpose": "Create and resume buffered adaptive personal learning paths.",
+      "dependsOn": ["pathmx"],
+      "replaces": ["path"]
+    },
+    {
+      "name": "teach",
+      "directory": "skills/teach",
+      "invocation": "automatic-and-explicit",
+      "purpose": "Design, author, and review PathMX paths for multiple learners.",
       "dependsOn": ["pathmx"]
     }
   ]

@@ -1,16 +1,22 @@
 # PathMX Skills
 
-Canonical agent instructions for authoring PathMX and running a personal
-learning space.
+Canonical agent instructions for authoring PathMX, personal learning, and
+shared learning paths.
 
 Give an agent [the bootstrap instructions](./bootstrap.md) to create a new
-learning repository. After setup, repository instructions and these two skills
+learning repository. After setup, repository instructions and these skills
 carry the workflow:
 
 | Skill | Use |
 | --- | --- |
 | `/pathmx` | Author, play, review, and verify PathMX. Invoked automatically for PathMX work. |
-| `/path` | Start or resume a buffered adaptive learning path for one learner. |
+| `/learn` | Start or resume a buffered adaptive learning path for one learner. |
+| `/teach` | Design, author, pilot, and review a reusable path for many learners. |
+
+The `/pathmx` [library](./skills/pathmx/library/index.md) holds stable patterns,
+templates, components, and fictional examples shared by `/learn` and `/teach`.
+Reusable material is verified in place; diagnostic-only cases stay under
+`tests/fixtures/`.
 
 Skills install under `.agents/skills/`. Codex discovers that directory
 directly. Claude Code uses the matching `.claude/skills` discovery link and a
@@ -42,8 +48,10 @@ Apply the canonical packages:
 bun run sync-skills -- --write <target-repository>
 ```
 
-Write mode owns only the packages declared in `skills/manifest.json` and their
-Claude discovery links. It leaves unrelated target content and skills alone.
+Write mode owns the packages declared in `skills/manifest.json`, names they
+explicitly replace, and their Claude discovery links. It removes the retired
+`/path` package while installing `/learn`, and leaves unrelated target content
+and skills alone.
 
 ## Evals
 

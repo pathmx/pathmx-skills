@@ -194,13 +194,13 @@ describe("deterministic grader", () => {
     temporaryRoots.push(root)
     for (const directory of [
       ".git",
-      ".agents/skills/path",
+      ".agents/skills/learn",
       ".agents/skills/pathmx",
       "paths/sql/modules/01-basics",
     ]) {
       await mkdir(path.join(root, directory), { recursive: true })
     }
-    await writeFile(path.join(root, ".agents/skills/path/SKILL.md"), "path")
+    await writeFile(path.join(root, ".agents/skills/learn/SKILL.md"), "learn")
     await writeFile(path.join(root, ".agents/skills/pathmx/SKILL.md"), "pathmx")
     await writeFile(
       path.join(root, "package.json"),

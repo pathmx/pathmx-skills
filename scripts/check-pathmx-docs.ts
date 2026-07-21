@@ -49,6 +49,7 @@ const referenceEntries = [
   "skills/pathmx/references/pathmx-questions.md",
   "skills/pathmx/references/pathmx-annotations.md",
   "skills/pathmx/references/pathmx-literate-components.md",
+  "skills/pathmx/references/pathmx-icons.md",
   "skills/pathmx/references/pathmx-code.md",
   "skills/pathmx/references/pathmx-math.md",
   "skills/pathmx/references/pathmx-media.md",
@@ -95,6 +96,32 @@ async function build(
   }
 
   return { outputDir, paths, stdout, sourcePaths }
+}
+
+async function requireBuildFails(
+  cwd: string,
+  outputDir: string,
+  entries: string[],
+  expectedDiagnostics: string[],
+) {
+  const child = Bun.spawn(
+    [pathmxBin, "build", ...entries, "-o", outputDir, "--clean"],
+    { cwd, stdout: "pipe", stderr: "pipe" },
+  )
+  const [stdout, stderr, exitCode] = await Promise.all([
+    new Response(child.stdout).text(),
+    new Response(child.stderr).text(),
+    child.exited,
+  ])
+  const diagnostics = `${stdout}\n${stderr}`.trim()
+  if (exitCode === 0) {
+    throw new Error(`PathMX unexpectedly accepted an invalid fixture:\n${diagnostics}`)
+  }
+  for (const expected of expectedDiagnostics) {
+    if (!diagnostics.includes(expected)) {
+      throw new Error(`PathMX failure missing diagnostic ${expected}:\n${diagnostics}`)
+    }
+  }
 }
 
 function requireEntries(result: BuildResult, entries: string[]) {
@@ -189,6 +216,71 @@ export async function checkPathmxDocs() {
       throw new Error("Literate Component example did not expand")
     }
 
+    const iconsOutput = await outputForEntry(
+      references,
+      "skills/pathmx/references/pathmx-icons.md",
+    )
+    const iconsHtml = await readFile(
+      path.join(iconsOutput, "skills", "pathmx", "references", "pathmx-icons.html"),
+      "utf8",
+    )
+    for (const expected of [
+      'data-pathmx-icon="lucide:pen-tool"',
+      'data-pathmx-icon="lucide:sparkles"',
+      'data-pathmx-icon="lucide:arrow-right"',
+      'data-pathmx-icon="lucide:book-open"',
+      'aria-label="Continue to icon choices"',
+      'data-pathmx-icons="lucide"',
+      'class="pmx-icon__svg"',
+    ]) {
+      if (!iconsHtml.includes(expected)) {
+        throw new Error(`Lucide icon reference missing rendered evidence: ${expected}`)
+      }
+    }
+    if ((iconsHtml.match(/data-pathmx-icon="lucide:/g) ?? []).length !== 4) {
+      throw new Error("Lucide icon reference transformed code examples")
+    }
+    if (
+      !/class="pmx-icon"[^>]+data-pathmx-icon="lucide:sparkles"[^>]+aria-hidden="true"/.test(
+        iconsHtml,
+      )
+    ) {
+      throw new Error("Decorative Lucide icon is not hidden from assistive technology")
+    }
+    if (
+      !/class="pmx-icon"[^>]+data-pathmx-icon="lucide:arrow-right"[^>]+role="img"[^>]+aria-label="Continue to icon choices"/.test(
+        iconsHtml,
+      )
+    ) {
+      throw new Error("Labeled Lucide icon is missing its accessible image contract")
+    }
+
+    const iconFailureRoot = path.join(repoRoot, "tests", "fixtures", "pathmx", "icons")
+    const iconFailureOutput = path.join(tempRoot, "icon-failure")
+    await requireBuildFails(
+      iconFailureRoot,
+      iconFailureOutput,
+      ["unknown.path.md"],
+      [
+        "icons-lucide/unknown-icon",
+        'Unknown Lucide icon "definitely-not-real"',
+      ],
+    )
+    const iconFailurePaths = await readJson<PathManifest>(
+      path.join(iconFailureOutput, "paths.json"),
+    )
+    const iconFailurePath = Object.values(iconFailurePaths.paths).find(
+      (entry) => entry.entry === "unknown.path.md",
+    )
+    if (!iconFailurePath) throw new Error("Unknown icon fixture did not emit a Path")
+    const iconFailureHtml = await readFile(
+      path.join(iconFailureOutput, iconFailurePath.outputPath, "unknown.path.html"),
+      "utf8",
+    )
+    if (!iconFailureHtml.includes(":lucide-definitely-not-real:")) {
+      throw new Error("Unknown icon fixture did not preserve fallback text")
+    }
+
     const coreRoot = path.join(repoRoot, "tests", "fixtures", "pathmx", "core")
     const core = await build(coreRoot, path.join(tempRoot, "core"), ["index.path.md"])
     requireEntries(core, ["index.path.md"])
@@ -199,6 +291,121 @@ export async function checkPathmxDocs() {
     const coreHtml = await readFile(path.join(coreOutput, "index.path.html"), "utf8")
     if (!coreHtml.includes("This Block is included") || !coreHtml.includes("fixture-card")) {
       throw new Error("Core include or component fixture did not render")
+    }
+
+    const libraryComponentRoot = path.join(
+      repoRoot,
+      "skills",
+      "pathmx",
+      "library",
+    )
+    const libraryComponents = await build(
+      libraryComponentRoot,
+      path.join(tempRoot, "library-components"),
+      ["examples/shared-components/index.path.md"],
+    )
+    requireEntries(libraryComponents, ["examples/shared-components/index.path.md"])
+    if (!libraryComponents.sourcePaths.has("components/feedback-panel.components.md")) {
+      throw new Error("Library feedback panel component was not included")
+    }
+    const libraryComponentOutput = await outputForEntry(
+      libraryComponents,
+      "examples/shared-components/index.path.md",
+    )
+    const libraryComponentHtml = await readFile(
+      path.join(libraryComponentOutput, "examples", "shared-components", "index.path.html"),
+      "utf8",
+    )
+    if (!libraryComponentHtml.includes('class="feedback-panel"')) {
+      throw new Error("Library feedback panel component did not render")
+    }
+
+    const learnTemplateRoot = path.join(
+      repoRoot,
+      "skills",
+      "pathmx",
+      "library",
+      "templates",
+      "learn",
+    )
+    const learnTemplates = await build(
+      learnTemplateRoot,
+      path.join(tempRoot, "learn-templates"),
+      ["path/index.path.md", "module/index.path.md"],
+    )
+    requireEntries(learnTemplates, ["path/index.path.md", "module/index.path.md"])
+
+    const teachTemplateRoot = path.join(
+      repoRoot,
+      "skills",
+      "pathmx",
+      "library",
+      "templates",
+      "teach",
+    )
+    const teachTemplates = await build(
+      teachTemplateRoot,
+      path.join(tempRoot, "teach-templates"),
+      ["path/index.path.md", "module/index.path.md"],
+    )
+    requireEntries(teachTemplates, ["path/index.path.md", "module/index.path.md"])
+
+    const stylingRoot = path.join(repoRoot, "tests", "fixtures", "pathmx", "styling")
+    const styling = await build(stylingRoot, path.join(tempRoot, "styling"), [
+      "index.path.md",
+    ])
+    requireEntries(styling, ["index.path.md"])
+    for (const source of ["unthemed.path.md", "themed.path.md"]) {
+      if (!styling.sourcePaths.has(source)) {
+        throw new Error(`Styling fixture missing ${source}`)
+      }
+    }
+    const stylingOutput = await outputForEntry(styling, "index.path.md")
+    const unthemedHtml = await readFile(
+      path.join(stylingOutput, "unthemed.path.html"),
+      "utf8",
+    )
+    const themedHtml = await readFile(
+      path.join(stylingOutput, "themed.path.html"),
+      "utf8",
+    )
+    for (const html of [unthemedHtml, themedHtml]) {
+      if (
+        !html.includes('data-pathmx-style="root"') ||
+        !html.includes('data-pathmx-style-source="base.css"')
+      ) {
+        throw new Error("Styling fixture missing the graph root stylesheet")
+      }
+    }
+    if (unthemedHtml.includes("data-pathmx-theme-source")) {
+      throw new Error("Unthemed styling fixture unexpectedly emitted a Source theme")
+    }
+    for (const expected of [
+      'data-pathmx-theme-source="themed.path"',
+      "--pmx-color-accent: #c2410c;",
+      'data-pathmx-style-name="lab"',
+      'data-pathmx-style-source="lab.css"',
+    ]) {
+      if (!themedHtml.includes(expected)) {
+        throw new Error(`Themed styling fixture missing: ${expected}`)
+      }
+    }
+    if (
+      themedHtml.indexOf('data-pathmx-style="root"') >
+      themedHtml.indexOf('data-pathmx-style-name="lab"')
+    ) {
+      throw new Error("Local styling fixture must load after the root stylesheet")
+    }
+    const baseHref = unthemedHtml.match(
+      /href="([^"]+)"[^>]+data-pathmx-style="root"[^>]+data-pathmx-style-source="base\.css"/,
+    )?.[1]
+    if (!baseHref) throw new Error("Styling fixture missing the root stylesheet asset")
+    const baseCss = await readFile(
+      path.join(stylingOutput, baseHref.replace(/^\//, "")),
+      "utf8",
+    )
+    if (!baseCss.includes("--fixture-base-theme: active")) {
+      throw new Error("Styling fixture root stylesheet asset is incomplete")
     }
 
     const configRoot = path.join(repoRoot, "tests", "fixtures", "pathmx", "config")
@@ -287,8 +494,15 @@ export async function checkPathmxDocs() {
       if (!example.sourcePaths.has(source)) throw new Error(`Repo example missing ${source}`)
     }
 
-    const pathRoot = path.join(repoRoot, "tests", "fixtures", "path")
-    const personalPath = await build(pathRoot, path.join(tempRoot, "path"), [
+    const learnExampleRoot = path.join(
+      repoRoot,
+      "skills",
+      "pathmx",
+      "library",
+      "examples",
+      "learn-sql-foundations",
+    )
+    const personalPath = await build(learnExampleRoot, path.join(tempRoot, "learn"), [
       "paths/sql-foundations/index.path.md",
     ])
     requireEntries(personalPath, ["sql-foundations/index.path.md"])
@@ -305,7 +519,7 @@ export async function checkPathmxDocs() {
     ]
     for (const source of expectedPathSources) {
       if (!personalPath.sourcePaths.has(source)) {
-        throw new Error(`Personal path fixture missing ${source}`)
+        throw new Error(`Learn library example missing ${source}`)
       }
     }
 
@@ -324,7 +538,7 @@ export async function checkPathmxDocs() {
       "utf8",
     )
     if (!personalAssessmentHtml.includes("Explain why the other join would drop rows")) {
-      throw new Error("Personal path checkpoint missing authored prompt")
+      throw new Error("Learn library checkpoint missing authored prompt")
     }
     const personalGraph = await readJson<GraphIndex>(
       path.join(personalOutput, "graph-index.json"),
@@ -341,13 +555,16 @@ export async function checkPathmxDocs() {
       explanation?.props?.actions?.submit !== "questions.submitText" ||
       explanation.props.question?.type !== "long"
     ) {
-      throw new Error("Personal path checkpoint missing question graph contract")
+      throw new Error("Learn library checkpoint missing question graph contract")
     }
 
     return {
       paths:
         Object.keys(references.paths.paths).length +
         Object.keys(core.paths.paths).length +
+        Object.keys(libraryComponents.paths.paths).length +
+        Object.keys(learnTemplates.paths.paths).length +
+        Object.keys(teachTemplates.paths.paths).length +
         Object.keys(config.paths.paths).length +
         Object.keys(questions.paths.paths).length +
         Object.keys(annotations.paths.paths).length +
@@ -356,6 +573,9 @@ export async function checkPathmxDocs() {
       sources: new Set([
         ...references.sourcePaths,
         ...core.sourcePaths,
+        ...libraryComponents.sourcePaths,
+        ...learnTemplates.sourcePaths,
+        ...teachTemplates.sourcePaths,
         ...config.sourcePaths,
         ...questions.sourcePaths,
         ...annotations.sourcePaths,

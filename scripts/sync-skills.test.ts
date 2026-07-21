@@ -38,7 +38,7 @@ async function temp(prefix: string) {
 async function createCanonical() {
   const root = await temp("pathmx-canonical-")
   const skills = path.join(root, "skills")
-  for (const name of ["pathmx", "path"]) {
+  for (const name of ["pathmx", "learn", "teach"]) {
     await mkdir(path.join(skills, name, "references"), { recursive: true })
     await writeFile(
       path.join(skills, name, "SKILL.md"),
@@ -49,7 +49,13 @@ async function createCanonical() {
   const manifest = path.join(skills, "manifest.json")
   await writeFile(
     manifest,
-    JSON.stringify({ skills: [{ name: "pathmx" }, { name: "path" }] }),
+    JSON.stringify({
+      skills: [
+        { name: "pathmx" },
+        { name: "learn", replaces: ["path"] },
+        { name: "teach" },
+      ],
+    }),
   )
   return { root, skills, manifest }
 }
@@ -69,8 +75,9 @@ describe("skill sync", () => {
   it("discovers declared skills in sorted order", async () => {
     const canonical = await createCanonical()
     expect(await discoverSkills(canonical.skills, canonical.manifest)).toEqual([
-      "path",
+      "learn",
       "pathmx",
+      "teach",
     ])
   })
 
@@ -97,17 +104,17 @@ describe("skill sync", () => {
     const target = await createTarget()
     const layout = await layoutFor(target, canonical)
     await writeSkills(layout, canonical.skills)
-    await writeFile(path.join(layout.agentSkillsDir, "path", "SKILL.md"), "changed\n")
-    await rm(path.join(layout.agentSkillsDir, "path", "references", "note.md"))
-    await writeFile(path.join(layout.agentSkillsDir, "path", "extra.md"), "extra\n")
+    await writeFile(path.join(layout.agentSkillsDir, "learn", "SKILL.md"), "changed\n")
+    await rm(path.join(layout.agentSkillsDir, "learn", "references", "note.md"))
+    await writeFile(path.join(layout.agentSkillsDir, "learn", "extra.md"), "extra\n")
     expect(await compareSkill(
-      path.join(canonical.skills, "path"),
-      path.join(layout.agentSkillsDir, "path"),
-      "path",
+      path.join(canonical.skills, "learn"),
+      path.join(layout.agentSkillsDir, "learn"),
+      "learn",
     )).toEqual([
-      { kind: "extra", path: "path/extra.md" },
-      { kind: "missing", path: "path/references/note.md" },
-      { kind: "changed", path: "path/SKILL.md" },
+      { kind: "extra", path: "learn/extra.md" },
+      { kind: "missing", path: "learn/references/note.md" },
+      { kind: "changed", path: "learn/SKILL.md" },
     ])
   })
 
@@ -123,6 +130,42 @@ describe("skill sync", () => {
     )
   })
 
+  it("removes the retired path skill while installing learn", async () => {
+    const canonical = await createCanonical()
+    const target = await createTarget(true)
+    await mkdir(path.join(target, ".agents", "skills", "path"), { recursive: true })
+    await writeFile(
+      path.join(target, ".agents", "skills", "path", "SKILL.md"),
+      "old-path\n",
+    )
+    await mkdir(path.join(target, ".claude", "skills"), { recursive: true })
+    await symlink(
+      ["..", "..", ".agents", "skills", "path"].join("/"),
+      path.join(target, ".claude", "skills", "path"),
+    )
+
+    const layout = await layoutFor(target, canonical)
+    expect((await inspectDrift(layout, canonical.skills)).files).toContainEqual({
+      kind: "extra",
+      path: "path (retired)",
+    })
+    expect((await inspectDrift(layout, canonical.skills)).links).toContain(
+      `extra   .claude/skills/path -> ${[
+        "..",
+        "..",
+        ".agents",
+        "skills",
+        "path",
+      ].join("/")}`,
+    )
+
+    await writeSkills(layout, canonical.skills)
+    await expect(lstat(path.join(layout.agentSkillsDir, "path"))).rejects.toThrow()
+    await expect(lstat(path.join(layout.claudeSkills, "path"))).rejects.toThrow()
+    expect(await readFile(path.join(layout.agentSkillsDir, "learn", "SKILL.md"), "utf8"))
+      .toContain("name: learn")
+  })
+
   it("uses per-skill links when Claude skills is a real directory", async () => {
     const canonical = await createCanonical()
     const target = await createTarget(true)
@@ -130,8 +173,8 @@ describe("skill sync", () => {
     await writeFile(path.join(target, ".claude", "skills", "local.txt"), "keep\n")
     const layout = await layoutFor(target, canonical)
     await writeSkills(layout, canonical.skills)
-    expect(await readlink(path.join(layout.claudeSkills, "path"))).toBe(
-      ["..", "..", ".agents", "skills", "path"].join("/"),
+    expect(await readlink(path.join(layout.claudeSkills, "learn"))).toBe(
+      ["..", "..", ".agents", "skills", "learn"].join("/"),
     )
     expect(await readFile(path.join(layout.claudeSkills, "local.txt"), "utf8")).toBe("keep\n")
   })
@@ -139,7 +182,7 @@ describe("skill sync", () => {
   it("rejects a real per-skill Claude conflict before writing", async () => {
     const canonical = await createCanonical()
     const target = await createTarget()
-    await mkdir(path.join(target, ".claude", "skills", "path"), { recursive: true })
+    await mkdir(path.join(target, ".claude", "skills", "learn"), { recursive: true })
     await expect(layoutFor(target, canonical)).rejects.toThrow("Claude skill conflict")
     await expect(lstat(path.join(target, ".agents"))).rejects.toThrow()
   })
@@ -161,10 +204,12 @@ describe("skill sync", () => {
   it("restores all managed skills after a mid-transaction failure", async () => {
     const canonical = await createCanonical()
     const target = await createTarget()
-    for (const name of ["path", "pathmx"]) {
+    for (const name of ["learn", "pathmx", "teach"]) {
       await mkdir(path.join(target, ".agents", "skills", name), { recursive: true })
       await writeFile(path.join(target, ".agents", "skills", name, "SKILL.md"), `old-${name}\n`)
     }
+    await mkdir(path.join(target, ".agents", "skills", "path"), { recursive: true })
+    await writeFile(path.join(target, ".agents", "skills", "path", "SKILL.md"), "old-path\n")
     const layout = await layoutFor(target, canonical)
     await expect(
       writeSkills(layout, canonical.skills, {
@@ -173,11 +218,17 @@ describe("skill sync", () => {
         },
       }),
     ).rejects.toThrow("install failure")
-    expect(await readFile(path.join(layout.agentSkillsDir, "path", "SKILL.md"), "utf8")).toBe(
-      "old-path\n",
+    expect(await readFile(path.join(layout.agentSkillsDir, "learn", "SKILL.md"), "utf8")).toBe(
+      "old-learn\n",
     )
     expect(await readFile(path.join(layout.agentSkillsDir, "pathmx", "SKILL.md"), "utf8")).toBe(
       "old-pathmx\n",
+    )
+    expect(await readFile(path.join(layout.agentSkillsDir, "teach", "SKILL.md"), "utf8")).toBe(
+      "old-teach\n",
+    )
+    expect(await readFile(path.join(layout.agentSkillsDir, "path", "SKILL.md"), "utf8")).toBe(
+      "old-path\n",
     )
   })
 

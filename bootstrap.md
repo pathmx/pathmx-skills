@@ -50,7 +50,7 @@ below.
 ## 3. Create the learning repository
 
 Create the chosen directory from the official starter. This command also
-installs the current official `/path` and `/pathmx` skills:
+installs the current official `/learn` and `/pathmx` skills:
 
 ```sh
 pathmx init <learning-space> --template pathmx-learning-starter
@@ -59,7 +59,7 @@ bun install --frozen-lockfile
 ```
 
 Read `AGENTS.md` and, when present, the instructions for the current agent
-harness. Confirm that `.agents/skills/path/SKILL.md` and
+harness. Confirm that `.agents/skills/learn/SKILL.md` and
 `.agents/skills/pathmx/SKILL.md` exist.
 
 Shell tool calls may not preserve a prior `cd`. Run every following project
@@ -120,7 +120,7 @@ Open the bundled Player tutorial for a first-time learner. They may skip it.
 
 ## 5. Begin learning
 
-Use `/path` implicitly. Ask a few questions at a time about:
+Use `/learn` implicitly. Ask a few questions at a time about:
 
 - what the learner wants to be able to do and why;
 - what they already know, with one small piece of evidence;
