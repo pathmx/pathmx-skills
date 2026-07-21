@@ -1,13 +1,13 @@
 ---
-status: proposed
+status: superseded
 date: 2026-07-20
 related:
   - https://build-week.pathmx.net/work-log/2026-07-18-player-native-learning-reshape.brief
   - ../skills/path/SKILL.md
-  - ../skills/path/references/adaptive-loop-example.md
+  - ../skills/path/references/buffered-loop.md
   - ../tests/fixtures/path/paths/learner.profile.md
   - ../tests/fixtures/path/paths/learning.activity.md
-  - ../tests/fixtures/path/paths/chess-opening-principles/index.path.md
+  - ../tests/fixtures/path/paths/sql-foundations/index.path.md
 ---
 
 # Adaptive Point A → Point B Learning Loop
@@ -17,11 +17,11 @@ Extends the
 confirm a plan, teach in small stages, review after each lesson, assess before
 the next, then update the roadmap from evidence.
 
-Kept here as the design brief behind `/path`. The skill summary and charts live
-in
-[adaptive-loop-example.md](../skills/path/references/adaptive-loop-example.md);
-the playable fixture is
-[chess-opening-principles](../tests/fixtures/path/paths/chess-opening-principles/index.path.md).
+Kept here as the first design brief behind `/path` and as a record of Tram Le
+and Mark Johnson's early testing. That testing exposed the waiting and weak
+progress structure in the one-Block-at-a-time loop described below. The current
+contract is the [buffered loop](../skills/path/references/buffered-loop.md), with
+a compact [SQL fixture](../tests/fixtures/path/paths/sql-foundations/index.path.md).
 
 | | |
 | --- | --- |
@@ -281,9 +281,9 @@ paths/
         └── lesson.assessment.md
 ```
 
-In this repository the playable fixture lives under
-`tests/fixtures/path/paths/`. Workflow briefs live in `work-log/` (not playable
-learner Sources).
+The retired Chess prototype remains recoverable from Git history. The current
+playable fixture lives under `tests/fixtures/path/paths/sql-foundations/`.
+Workflow briefs live in `work-log/`, not in synced learner Sources.
 
 ---
 

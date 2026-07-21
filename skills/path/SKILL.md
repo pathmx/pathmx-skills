@@ -1,89 +1,214 @@
 ---
 name: path
-description: Create and resume an opinionated personal learning path in a PathMX workspace. Use assessment evidence to choose the next lesson for one learner and one learning goal.
+description: Start, plan, teach, and resume personal learning in a PathMX learning space. Use automatically when one learner asks to learn, study, practice, build a curriculum, continue a learning path, review progress, or turn a goal into guided lessons, including when a new personal learning repository must be created.
 ---
 
 # Personal Learning Path
 
-Build one durable, adaptive path for one learner. Use `/pathmx` for PathMX
-syntax and verification.
+Build a durable personal learning space for one learner. Use the installed
+`pathmx` skill for PathMX syntax, Player routes, and verification.
 
-Present learner-facing lessons, reviews, and assessments in the PathMX Player.
-Start or reuse `pathmx play` for the active root Source and give the learner
-its Player route. Do not use the raw Markdown file as the learning interface.
-After creating or updating playable material, open it in the Player again.
+Keep the learner moving. Prepare a coherent runway of material, then adapt at
+meaningful boundaries. Never require an agent turn between ordinary lesson
+Blocks.
 
-## Learning loop
+## Open or create the space
 
-Run the same loop at path and lesson level:
+If no learning repository exists, carry out the same setup as the hosted
+bootstrap:
 
-1. **Assess position.** Find Point A from evidence, not vibes: past work,
-   artifact, sample, picture, or a short diagnostic.
-2. **Aim.** Agree on Point B, a small rubric, Lesson 1’s destination, and two
-   or three Later titles. Confirm before teaching.
-3. **Experience.** Build one lesson at the proximal edge. One agent turn adds
-   one Block with a stable `id` (~40–120 words).
-4. **Review.** Ask what the learner can do now and what is still fuzzy. Offer
-   gap help and short practice until they are ready.
-5. **Assess outcome.** Use 3–4 multiple-choice items plus one short answer
-   grounded in what was taught. Pass = no core concept missed.
-6. **Record and advance.** Write a synthesis, update current Point A, and
-   place the next lesson from evidence.
+1. Ask where to create a new directory.
+2. Ensure Bun is installed.
+3. Install or update the native command with `pathmx self-update`, or
+   `bunx @fellowhumans/pathmx@latest self-update` when it is missing.
+4. Run
+   `pathmx init <learning-space> --template pathmx-learning-starter`.
+5. Install the lockfile, initialize local Git, and commit the verified scaffold
+   baseline.
+6. Compare the exact project dependency with the freshly updated native
+   `pathmx --version`. If they match, run the normal check once instead of
+   reinstalling the same package. If they differ, attempt the latest project
+   dependency as the version migration described in the `pathmx` tooling
+   reference. Keep it only after the full build and Player smoke pass;
+   otherwise restore the baseline version files.
+7. Read the new repository instructions and continue there.
 
-Do not build the whole path ahead. Later items stay titles until they are next.
+Shell tool calls may not preserve a prior `cd`. Set the new repository as the
+working directory, or prefix every project command with an explicit `cd`, so
+install, verification, Player, and route commands run in the intended space.
 
-## Start or resume
+Never replace an existing directory or create a remote without permission.
+Treat the space as private personal data.
 
-Before teaching, read the nearest repository instructions and root Path
-Source. Reuse the workspace's layout when one exists.
+For an existing space, read the root Source, learner profile, activity log,
+active path, current module, latest checkpoint, and unresolved annotations.
+Read only the history needed to continue.
 
-For a new path:
+## Ask a small onboarding set
 
-1. Onboard: goal, why, prior knowledge, stuck points, time/pace, preferred feel.
-2. Collect Point A evidence, then write Point A in observable language citing it.
-3. Draft Point B, rubric, Lesson 1 destination, and Later titles.
-4. Persist the plan and wait for confirm (`roadmap.status: confirmed`).
-5. Build only the first lesson shell, then teach one Block at a time.
+Ask a few questions at a time:
 
-For a returning path:
+1. What does the learner want to be able to do, and why?
+2. What do they already know or find difficult?
+3. What small artifact, example, explanation, or diagnostic can show their
+   current position?
+4. How much time and energy can they usually give a session?
+5. What learning feel helps: direct, conversational, exploratory, practical,
+   visual, or another preference?
+6. What visual mood, color direction, light/dark preference, readability need,
+   or motion sensitivity should shape the Player?
 
-1. Read `paths/index.path.md`, the learner profile, activity log, active path,
-   latest assessment, and latest synthesis.
-2. Give a short recap and two or three retrieval prompts from earlier work.
-3. Continue from the recorded `stage` cursor and current Point A.
+Save only learner-confirmed, learning-relevant context. Do not solicit private
+credentials or unnecessary sensitive information.
 
-Record only learner-confirmed context. Avoid sensitive data by default.
+## Map visible progress
 
-## Build one lesson
+Turn onboarding evidence into:
 
-1. Set `start` from the current position and latest synthesis.
-2. Set `destination` as an observable learner capability.
-3. Teach one small win at the proximal edge with retrieval, practice, and
-   immediate feedback.
-4. Persist `stage` in lesson frontmatter after each turn.
-5. After teaching, run a short review. If unsure, name the gap and add practice.
-6. Write a plain Markdown assessment with agent-facing rationales, concept
-   tags (core vs peripheral), and a short-answer rubric.
-7. Gate the next lesson on evidence. Prefer spaced assessment at the next
-   session when a break occurs.
-8. On a core miss, encourage and retry with variant items. After 2–3 failed
-   attempts, build a smaller remediation lesson instead of advancing Later.
-9. If remediation assessment also fails, renegotiate Point B or pace — do not
-   loop remediation again.
-10. Record a synthesis: evidence, change in perspective, review-queue items,
-    placement, and what opens next.
+- **Point A:** an observable current capability, citing the evidence;
+- **Point B:** the capability the learner wants;
+- **3–7 milestones:** named capabilities between A and B;
+- **evidence targets:** what demonstrates each milestone;
+- **current module:** 2–4 sessions with one coherent purpose;
+- **later modules:** provisional titles and outcomes.
 
-If the installed tools cannot capture suitable evidence, report the capability
-gap. Do not weaken the assessment. PathMX does not grade automatically; the
-agent scores against the rubric and writes the durable result.
+Write the proposed map into the learning repository before showing it to the
+learner. Use the bundled `assets/path/index.path.md` scaffold so every one of
+the 3–7 milestones has one visible `planned`, `ready`, `in progress`,
+`demonstrated`, or `paused` status plus an evidence target. Link the proposed
+foreground Path from the home Source. This first useful artifact should be
+available in Player before the learner waits for the substantial module build.
+Update the learner profile and the activity record's current state in the same
+change so they agree on the foreground Path.
+
+In the learning starter, keep `paths/index.path.md` as the single configured
+Player root. A learner's individual Path is a nested Source linked from home,
+not another `pathmx.config.md` Path entry. Rebuild the home graph after linking
+it; do not add Source `handle` frontmatter to make ordinary nested routes work.
+
+Show the learner that persisted map and confirm it before teaching. Keep
+exactly one foreground path while allowing other paths to remain paused or
+completed.
+
+When the learner asks to see the map first, stop after writing and linking the
+proposed Path Source. Do not create session, review, or checkpoint Sources in
+that turn. Give its exact Player URL, label it as a proposal, and wait for
+explicit confirmation of Point B, the milestone map, and the proposed current
+module. A request to show a map is not confirmation.
+
+Do not fully author the entire future curriculum. Fully author the current
+module and keep later modules easy to change.
+
+## Build a learning runway
+
+Prepare all sessions in the current module before asking the learner to begin.
+Keep optional consolidation or retrieval material ready so a slow agent never
+blocks learning. Let the learner continue without waiting for another agent
+turn.
+
+Before calling the module ready, check every session for a worked example, an
+optional hint or smaller attempt, and an immediate rationale, self-check, or
+rubric. Keep focused review and an optional stretch task ready in the module.
+
+For a standard two-session module, copy the bundled `assets/module/` scaffold
+into the new module directory and replace its author notes. Add or remove
+session files only when the learner's confirmed rhythm calls for it.
+
+Work in visible stages when the agent surface supports progress updates:
+
+1. Create the module index and session skeletons, then report that the runway
+   exists.
+2. Fill the first session, then report the concrete capability now ready.
+3. Fill the remaining sessions, review, and checkpoint, then report that the
+   uninterrupted module is ready for verification.
+4. Run one targeted build or route check, then one full check before handoff.
+
+Keep these updates factual and brief; they are learner-visible progress, not
+requests for another reply. Reuse the active Player. Do not repeat installation,
+migration, or full compatibility checks within the same healthy task.
+
+Design each session for roughly 15–30 minutes unless the learner chose another
+pace. Give it a complete arc:
+
+1. **Orient.** State why this matters, the destination, and the session map.
+2. **Model.** Explain with a concrete example or worked example.
+3. **Guide.** Offer a supported attempt with optional hints.
+4. **Apply.** Ask for an independent or transfer attempt.
+5. **Check.** Provide immediate self-check, rationale, or a clear rubric.
+6. **Reflect.** Invite a short note, question, or annotation.
+7. **Complete.** Summarize the capability practiced and what comes next.
+
+Use Blocks for meaningful phases and Beats for useful reveals. Do not turn
+every sentence into a Beat. Make the session readable outside Play mode.
+
+## Provide immediate and slower feedback
+
+Build attractive, structured Player support that works without an agent turn:
+
+- show a hint;
+- inspect a worked example;
+- try a smaller version;
+- reveal a rationale or rubric after an attempt;
+- choose an optional stretch task.
+
+Use existing starter components when they fit. Create bespoke Literate
+Components only when they improve the learning experience.
+
+Treat annotations as an asynchronous curriculum-feedback inbox. Encourage the
+learner to mark confusion, disagreement, useful ideas, or requests for more
+depth. On return, review open annotations, reply or revise future material, and
+resolve threads only when addressed. Preserve learner-authored comments.
+
+## Adapt at useful boundaries
+
+Use session checks as low-stakes evidence. Let the learner continue through a
+module with small uncertainties when later work does not depend on them.
+
+At the module checkpoint:
+
+1. Review work, responses, reflections, and annotations.
+2. Compare the evidence with the milestone target.
+3. Mark the capability demonstrated, keep it in progress, or offer focused
+   review.
+4. Update current Point A and prepare the next module.
+5. Record a short synthesis and the reason for placement.
+
+Gate progression only when a later capability genuinely depends on a missed
+core idea. After repeated difficulty, provide a smaller remediation module or
+renegotiate the goal or pace. Do not trap the learner in a remediation loop.
+
+## Personalize presentation
+
+Start from the repository's readable default theme. Translate confirmed style
+preferences into a small set of theme tokens: color, surface, typography,
+measure, contrast, and motion. Keep navigation and learning structure stable.
+
+Prefer restrained personalization over a bespoke interface. Check contrast,
+narrow screens, keyboard use, reduced motion, and both requested color modes.
+
+## Keep the Player live
+
+Reuse a healthy Player server that belongs to the repository or start
+`bun run play` in a long-lived terminal. Resolve the exact Source route with
+`bunx pathmx route` and link to the useful Source, Block, or Beat position.
+
+Open and review learner-facing work in an integrated browser when available.
+In Codex, prefer `@Browser`; in Claude Code, use its Chrome integration when
+already configured. Otherwise use the system browser or provide a clickable
+URL. Teach first-time learners with the bundled Player tutorial.
+
+At handoff, give the exact starting URL, say how to enter and navigate Play
+mode, name the ready sessions, and tell the learner when to return for review.
 
 ## Default layout
 
-This is `/path`'s default, not a general PathMX requirement:
+Use the starter's layout when present. The portable default is:
 
 ```text
 paths/
 ├── index.path.md
+├── getting-started/
+│   └── player.lesson.md
 ├── learner.profile.md
 ├── learning.activity.md
 ├── theme.css
@@ -92,42 +217,34 @@ paths/
 └── <path-name>/
     ├── index.path.md
     ├── path.outcome.md
-    ├── onboarding/
-    │   ├── index.lesson.md
-    │   ├── point-a-evidence.md
-    │   └── confirm-plan.md
-    ├── lessons/
-    │   └── <lesson-name>/
-    │       ├── index.lesson.md
-    │       ├── lesson.review.md
-    │       ├── lesson.practice.md
-    │       └── lesson.assessment.md
-    └── references/
-        └── index.references.md
+    └── modules/
+        └── 01-<module-name>/
+            ├── index.path.md
+            ├── 01-<session>.lesson.md
+            ├── 02-<session>.lesson.md
+            ├── review.practice.md
+            └── milestone.assessment.md
 ```
 
-- `paths/index.path.md` is the learner home / root Source.
-- `theme.css` and `assets/` are optional shared styling and components.
-- `path.outcome.md` records Point A, Point B, and the path rubric.
-- Path `index.path.md` records the outline, gates, and current position.
-- `index.lesson.md` records historical `start`, `destination`, and `stage`.
-- `lesson.review.md` gates readiness before assessment.
-- `lesson.assessment.md` asks for observable evidence; pass = no core miss.
-- `learning.activity.md` records reviews, syntheses, placements, and the
-  review queue.
+- `paths/index.path.md` is the personal learning home.
+- `learner.profile.md` stores confirmed learning and style preferences.
+- `learning.activity.md` is an append-only record of evidence, syntheses, and
+  placement decisions.
+- A path index shows Point A, Point B, milestones, progress, and the current
+  module.
+- A module index links its fully prepared sessions and checkpoint.
+- Completed Sources remain history. Do not silently rewrite past evidence.
 
-Renegotiate Point B explicitly when evidence changes the learner's goal. Log
-the change; do not rewrite history silently. Complete a path only when its
-rubric is met and the learner agrees.
+Read the [buffered loop](./references/buffered-loop.md) and the compact
+[worked example](./references/worked-example.md) when planning or changing a
+path.
 
 ## Learning rules
 
-- Use backward design: define evidence before content.
-- Teach at the zone of proximal development.
-- Use retrieval, spacing, and interleaving to build storage strength.
-- Keep lessons small and concrete.
-- Prefer real transfer tasks over recall alone.
-- Advance on evidence, not fluency or impressions.
-
-See the compact [worked example](./references/worked-example.md) and the full
-[adaptive loop fixture](./references/adaptive-loop-example.md).
+- Use backward design: name evidence before detailed content.
+- Use the proximal edge to choose difficulty, not generation cadence.
+- Prefer worked examples for novices, then fade support.
+- Use retrieval, spacing, interleaving, practice, and transfer deliberately.
+- Keep sessions concrete and finishable.
+- Adapt from evidence without making the learner wait unnecessarily.
+- Renegotiate Point B explicitly when the learner's goal changes.

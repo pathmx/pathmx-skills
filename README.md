@@ -1,48 +1,70 @@
 # PathMX Skills
 
-This is the canonical, self-contained collection of PathMX agent skills.
+Canonical agent instructions for authoring PathMX and running a personal
+learning space.
+
+Give an agent [the bootstrap instructions](./bootstrap.md) to create a new
+learning repository. After setup, repository instructions and these two skills
+carry the workflow:
 
 | Skill | Use |
 | --- | --- |
-| `/pathmx` | PathMX syntax, tooling, authoring, review, Play, and verification. |
-| `/path` | One opinionated, adaptive personal learning path. Uses `/pathmx` for authoring. |
+| `/pathmx` | Author, play, review, and verify PathMX. Invoked automatically for PathMX work. |
+| `/path` | Start or resume a buffered adaptive learning path for one learner. |
+
+Skills install under `.agents/skills/`. Codex discovers that directory
+directly. Claude Code uses the matching `.claude/skills` discovery link and a
+small `CLAUDE.md` that imports `AGENTS.md`.
 
 ## Develop
 
-Requires Bun. Dependencies include a pinned PathMX CLI.
+Requires Bun. The repository pins a published PathMX version so every syntax
+claim and fixture is reproducible. `package.json` names that exact compatibility
+baseline. It is the safe fallback for latest-after-verification updates, not
+the version of this skills repository.
 
 ```sh
 bun install --frozen-lockfile
 bun run check
 ```
 
-Examples and syntax claims must pass the local checks.
-
-## Evals
-
-Use [the agent rubric](./evals/pathmx-skills.rubric.md) to score task output and
-verification evidence.
-
-## Work log
-
-Design briefs that informed `/path` live under [work-log/](./work-log/). They
-are reference notes, not synced skill packages.
-
 ## Sync
 
-Check a target without writing:
+Check a target repository without writing:
 
 ```sh
 bun run sync-skills -- --check <target-repository>
 ```
 
-Apply the canonical copies:
+Apply the canonical packages:
 
 ```sh
 bun run sync-skills -- --write <target-repository>
 ```
 
-Write mode manages only the skill packages declared in
-`skills/manifest.json` and their Claude discovery links. It leaves unrelated
-target content and skills alone. Edit canonical skill content here; a later
-sync replaces edits made inside managed target copies.
+Write mode owns only the packages declared in `skills/manifest.json` and their
+Claude discovery links. It leaves unrelated target content and skills alone.
+
+## Evals
+
+The [eval harness](./evals/README.md) drives the real Codex CLI through a
+multi-turn bootstrap and learning flow, grades the resulting repository, and
+can add an independent structured model judge.
+
+```sh
+bun run eval:check
+bun run eval -- list
+bun run eval -- run sql-beginner
+bun run eval -- run sql-beginner --profile instruction-floor
+```
+
+## Design history and contributors
+
+Design briefs live under [work-log](./work-log/). They are reference notes, not
+installed skill content.
+
+The buffered adaptive learning loop grew from early hands-on testing by Tram Le
+and Mark Johnson, which exposed the limits of Block-by-Block curriculum
+generation. Tram also contributed the original math, media, code, tooling,
+styling, and adaptive-path reference work that this repository continues to
+build on.

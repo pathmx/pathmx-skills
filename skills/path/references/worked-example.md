@@ -1,38 +1,11 @@
 # Worked Example
 
-This SQL path is a compact slice: five durable files at one moment after a
-lesson. It does **not** include onboarding, plan confirm, short review,
-practice, remediation, or the no-core-miss assessment pattern.
+This compact SQL example shows the durable shape of one buffered module. It is
+not a required topic or exact file count.
 
-For the full onboard → confirm → review → assess → remediate fixture, see
-[adaptive-loop-example.md](./adaptive-loop-example.md).
+## Path map
 
-## `paths/sql-foundations/path.outcome.md`
-
-```md
----
-type: outcome
-status: active
----
-
-# SQL Foundations Outcome
-
-## Point A
-
-Can filter one table with `SELECT` and `WHERE`. Joins are unfamiliar.
-
-## Point B
-
-Can answer support questions that require combining two tables.
-
-## Rubric
-
-- Chooses `INNER JOIN` or `LEFT JOIN` for the required rows.
-- Writes the join condition correctly.
-- Explains which unmatched rows remain.
-```
-
-## `paths/sql-foundations/index.path.md`
+`paths/sql-foundations/index.path.md`:
 
 ```md
 ---
@@ -42,113 +15,115 @@ status: active
 
 # SQL Foundations
 
-[Outcome and rubric](./path.outcome.md)
+**Point A:** Can filter one table. Joins are unfamiliar.
 
----
+**Point B:** Can build and explain a small support report across related tables.
 
-## Current lesson
+## Milestones
 
-- [ ] [Joining tables](./lessons/joins/index.lesson.md)
+- **Choose rows from one table:** demonstrated
+- **Combine related tables:** in progress
+- **Summarize joined results:** planned
+- **Build the support report:** planned
 
-## Later
+## Current module
 
-- Aggregation and `GROUP BY`
-- A small support report
+[Combine related tables](./modules/01-combine-tables/index.path.md)
 ```
 
-## `paths/sql-foundations/lessons/joins/index.lesson.md`
+## Current module
+
+`paths/sql-foundations/modules/01-combine-tables/index.path.md`:
+
+```md
+---
+type: path
+status: ready
+---
+
+# Combine Related Tables
+
+**Destination:** Choose `INNER JOIN` or `LEFT JOIN`, write the join condition,
+and explain which unmatched rows remain.
+
+1. [See what a join preserves](./01-rows-that-survive.lesson.md)
+2. [Choose the join from the question](./02-choose-the-join.lesson.md)
+3. [Optional review](./review.practice.md)
+4. [Milestone checkpoint](./milestone.assessment.md)
+```
+
+Both sessions exist before the learner starts the module.
+
+## One uninterrupted session
+
+`01-rows-that-survive.lesson.md`:
 
 ````md
 ---
 type: lesson
-status: active
-start: Can filter one table; joins are unfamiliar
-destination: Can choose and write INNER or LEFT JOIN and explain which rows remain
+status: ready
 ---
 
-# Joining Tables
+# See What a Join Preserves
 
-## Recall
-
-From memory, what does `WHERE` remove from a result?
+By the end, you will predict which ticket rows survive an `INNER JOIN` and a
+`LEFT JOIN`.
 
 ---
 
-## Two tables
+<!-- id: worked-example -->
+
+## Start with one worked example
 
 ```sql
 SELECT t.id, c.name
 FROM tickets t
-INNER JOIN customers c ON c.id = t.customer_id;
+LEFT JOIN customers c ON c.id = t.customer_id;
 ```
+
+A `LEFT JOIN` keeps every ticket. When a customer record is missing, the
+customer columns are empty instead of the ticket disappearing.
 
 ---
 
-## Keep unmatched tickets
+<!-- id: guided-attempt -->
 
-Change `INNER JOIN` to `LEFT JOIN`. Predict the difference before running it.
+## Predict before revealing
 
-[Take the assessment](./lesson.assessment.md)
+What changes if `LEFT JOIN` becomes `INNER JOIN`?
+
+Write one sentence before continuing.
+
+---
+
+<!-- id: rationale -->
+
+## Compare your prediction
+
+`INNER JOIN` keeps only tickets with a matching customer. The important
+question is not “Which keyword do I remember?” but “Which rows must survive?”
+
+---
+
+<!-- id: independent-check -->
+
+## Apply it
+
+Choose a join for a report that must include every ticket, then explain the
+choice. Use the optional review if the row-survival rule is still fuzzy.
+
+[Continue to Session 2](./02-choose-the-join.lesson.md)
 ````
 
-## `paths/sql-foundations/lessons/joins/lesson.assessment.md`
+The learner can complete the session without another agent turn. They may
+annotate any confusing explanation for later review.
 
-```md
----
-type: assessment
-status: ready
----
+## Milestone checkpoint
 
-# Joining Tables Assessment
+The checkpoint asks for one small support query and explanation. The agent
+compares that artifact with the module's evidence target, records a synthesis
+in `paths/learning.activity.md`, and either marks the milestone demonstrated or
+prepares focused review.
 
-## Evidence target
-
-Choose and write `INNER JOIN` or `LEFT JOIN`, then explain which unmatched rows
-remain.
-
-## Transfer task
-
-Write a query that lists every ticket, including tickets whose customer record
-is missing. Return the ticket ID and customer name.
-
-Save the query and a short explanation in a file, then link that artifact from
-the activity log.
-
-## Rubric
-
-- Uses `LEFT JOIN`.
-- Joins the correct keys.
-- Keeps all ticket rows.
-- Explains why an `INNER JOIN` would drop some tickets.
-
-The next lesson stays gated until the evidence meets this rubric.
-```
-
-## `paths/learning.activity.md`
-
-```md
----
-type: activity
----
-
-# Learning Activity
-
----
-
-<!--
-id: joins-complete
-date: 2026-07-18
--->
-
-## Synthesis: joins
-
-**Evidence:** [Joining tables assessment](./sql-foundations/lessons/joins/lesson.assessment.md)
-meets the rubric; the linked work uses `LEFT JOIN` and explains unmatched rows.
-
-**Shift:** The learner now treats join choice as a statement about which rows
-must survive, not as syntax to memorize.
-
-**Opens next:** Aggregate the joined results by customer segment.
-```
-
-The next lesson starts from the final synthesis, not from a generic sequence.
+The next module starts from that recorded evidence, not from a generic course
+sequence.

@@ -1,0 +1,41 @@
+schema: pathmx-eval/scenario
+version: 1
+id: offline-guitar
+title: Offline physical practice
+objective: Build a PathMX runway that supports guitar practice away from the screen.
+tags: [bootstrap, physical-practice, media]
+bootstrap:
+  source: local
+learner:
+  learningSpace: learning-space
+  initialMessage: >-
+    Follow the bootstrap instructions and create ./learning-space. I want to play
+    a simple song smoothly on acoustic guitar instead of only knowing disconnected
+    chord shapes.
+  hiddenNotes: >-
+    The material should coordinate short off-screen attempts with useful Player
+    guidance. Avoid pretending the repository can hear or assess performance.
+turns:
+  - id: evidence
+    phase: onboarding
+    message: >-
+      I can form G, C, D, and Em slowly, but I pause for several seconds between
+      changes and lose the beat. I can practice for 20 minutes most days. I want
+      direct instructions, diagrams when useful, and no autoplaying media.
+  - id: style
+    phase: map
+    message: >-
+      A dark charcoal and amber style would feel good, but keep text large and
+      contrast strong. My goal song uses G, C, D, and Em. Show me achievable
+      milestones and how I will know each one is working.
+    expect:
+      passed: [path.milestones]
+      notPassed: [module.buffered]
+  - id: confirm
+    phase: module
+    message: >-
+      I confirm the map. Prepare the first full practice module with immediate
+      help for when a chord change breaks down, then give me the exact starting
+      link.
+    expect:
+      passed: [module.buffered, session.immediate-support, player.exact-route]

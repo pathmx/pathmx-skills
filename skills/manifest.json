@@ -12,8 +12,8 @@
     {
       "name": "path",
       "directory": "skills/path",
-      "invocation": "explicit",
-      "purpose": "Create and resume one adaptive learning path.",
+      "invocation": "automatic-and-explicit",
+      "purpose": "Create and resume buffered adaptive personal learning paths.",
       "dependsOn": ["pathmx"]
     }
   ]

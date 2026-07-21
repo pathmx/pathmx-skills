@@ -65,7 +65,7 @@ export function extractMarkdownLinks(markdown: string): MarkdownLink[] {
       if (target) links.push({ line: index + 1, target })
     }
 
-    const definition = line.match(/^\s*\[[^\]]+\]:\s*(<[^>]+>|\S+)/)
+    const definition = line.match(/^\s*\[(?!\^)[^\]]+\]:\s*(<[^>]+>|\S+)/)
     if (definition?.[1]) {
       links.push({
         line: index + 1,

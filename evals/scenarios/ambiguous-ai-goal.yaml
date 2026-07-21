@@ -1,0 +1,41 @@
+schema: pathmx-eval/scenario
+version: 1
+id: ambiguous-ai-goal
+title: Ambiguous AI goal that needs narrowing
+objective: Turn an unclear aspiration into an evidence-based, learner-confirmed path.
+tags: [bootstrap, ambiguous-goal, nontechnical]
+bootstrap:
+  source: local
+learner:
+  learningSpace: learning-space
+  initialMessage: >-
+    Follow the bootstrap instructions and create ./learning-space. I keep hearing
+    about AI and feel behind. I want to learn AI, but I do not know what that
+    should mean for me.
+  hiddenNotes: >-
+    The agent should narrow the outcome before building substantial material.
+    The learner mainly writes community-newsletter copy and wants practical,
+    critical use rather than programming or model training.
+turns:
+  - id: context
+    phase: onboarding
+    message: >-
+      I write a weekly community newsletter. I would like to use AI to brainstorm
+      and revise without losing my voice, and to recognize when an answer is
+      unreliable. I do not want to learn programming right now.
+  - id: rhythm-style
+    phase: map
+    message: >-
+      I have two 20-minute sessions a week. I prefer conversational examples and
+      side-by-side comparisons. Use a warm paper-like light theme with high
+      contrast and no animation. Show me a small milestone map first.
+    expect:
+      passed: [path.milestones]
+      notPassed: [module.buffered]
+  - id: confirm
+    phase: module
+    message: >-
+      Yes, that outcome and map fit. Prepare the complete first module and point
+      me to the exact place to start.
+    expect:
+      passed: [module.buffered, session.immediate-support, player.exact-route]
